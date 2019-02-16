@@ -3,7 +3,7 @@
 # For license information, please see the LICENSE file in the root directory.
 
 from flask import Flask, request, jsonify
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 import base64
 import nufhe
 import zlib
@@ -13,6 +13,7 @@ app = Flask(__name__)
 CORS(app)
 
 @app.route("/generate_key_pair",methods=['POST'])
+@cross_origin()
 def generate_secret_key():
     secret_key, cloud_key = ctx.make_key_pair()
     cloud_key = cloud_key.dumps()
@@ -28,6 +29,7 @@ def generate_secret_key():
     )
 
 @app.route('/encrypt',methods=['POST'])
+@cross_origin()
 def encrypt():
     data = request.json
     secret_key = nufhe.NuFHESecretKey.loads(base64.b64decode(data['secret_key']), ctx.thread)
@@ -44,6 +46,7 @@ def encrypt():
     )
 
 @app.route('/decrypt',methods=['POST'])
+@cross_origin()
 def decrypt():
     data = request.json
     encrypted_data = nufhe.LweSampleArray.loads(base64.b64decode(data['encrypted_data']), ctx.thread)

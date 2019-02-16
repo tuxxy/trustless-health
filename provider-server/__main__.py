@@ -3,7 +3,7 @@
 # For license information, please see the LICENSE file in the root directory.
 
 from flask import Flask, request, jsonify
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 import nufhe
 import base64
 import zlib
@@ -13,6 +13,7 @@ app = Flask(__name__)
 CORS(app)
 
 @app.route('/compute',methods=['POST'])
+@cross_origin()
 def encrypt():
     data = request.json
     encrypted_data = nufhe.LweSampleArray.loads(base64.b64decode(data['encrypted_data'], ctx.thread))
