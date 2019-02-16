@@ -14,8 +14,9 @@ export class LocalStorageWallet {
                 const Wallet = this.web3.eth.accounts.wallet.load(password);
 
                 const accounts: string[] = [];
-                for (const address of Object.keys(Wallet)) {
-                    accounts.push(address);
+                // @ts-ignore
+                for (let i = 0; i < Wallet.length; i++) {
+                    accounts[i] = Wallet[i].address;
                 }
                 this.web3.eth.accounts.wallet.clear();
                 resolve(accounts);
@@ -50,5 +51,6 @@ export class LocalStorageWallet {
             }
         })
     }
+
 
 }

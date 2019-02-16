@@ -19,6 +19,6 @@ export interface ISignatureObj {
 
 export class Config {
     public static chainId = 5777;
-    public static gasLimit = 10000000; // 10 Mil Gas (10*10**6)
-    public static gasPrice = 5000000000; // 5G Wei (5*10**9)
+    public static gasLimit = 100000;
+    public static gasPrice = 50000;
 }
