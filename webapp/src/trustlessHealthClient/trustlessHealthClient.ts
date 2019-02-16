@@ -1,6 +1,6 @@
 import axios, {AxiosResponse} from 'axios';
 import Web3 from 'web3';
-import {Callback, Config, ITxObj} from "./config";
+import {Callback, Config, IAnalysisOffering, ITxObj} from "./config";
 
 const contractJson = require('../contracts/TrustlessHealth.json');
 
@@ -45,6 +45,7 @@ export class TrustlessHealthClient {
         this.web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
         this.contract = new this.web3.eth.Contract(this.contractABI, this.contractAddress);
 
+        // TODO: Remove debugging statement below
         this.GetCurrentAccount().then(account => {
             console.log('Account', account);
         });
@@ -200,8 +201,8 @@ export class TrustlessHealthClient {
         });
     }
 
-    public GetOfferings(categoryId: number): Promise<string[]> {
-        return new Promise<string[]>(async (resolve, reject) => {
+    public GetOfferings(categoryId: number): Promise<IAnalysisOffering[]> {
+        return new Promise<IAnalysisOffering[]>(async (resolve, reject) => {
             try {
                 const offerings = await this.contract.methods.getOfferings(categoryId).call();
                 resolve(offerings)
