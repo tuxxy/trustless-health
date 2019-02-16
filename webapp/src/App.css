@@ -20,6 +20,7 @@
 
 .widget-wrapper {
   width: 50%;
+  margin: 10px;
 }
 
 .App-logo {
@@ -50,10 +51,17 @@
 }
 
 .category-wrapper {
+  margin: 10px;
   display: flex;
   flex-wrap: wrap;
+  justify-content: space-around;
 }
 
 .category-wrapper .category {
-  flex: 0 0 33%;
+  flex: 0 0 30%;
+  margin: 10px 0;
+}
+
+.bp3-panel-stack-view {
+  position: absolute;
 }

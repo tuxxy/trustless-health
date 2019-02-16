@@ -237,7 +237,7 @@ export class TrustlessHealthClient {
 
     public encrypt(data: number[], secretKey: string) {
         console.log('Encrypting...');
-        this.clientServer.post('encrypt', {
+        return this.clientServer.post('encrypt', {
             data,
             secret_key: secretKey,
         }).then((result: AxiosResponse) => {
@@ -249,7 +249,7 @@ export class TrustlessHealthClient {
 
     public decrypt(data: string, secretKey: string) {
         console.log('Decrypting...');
-        this.clientServer.post('decrypt', {encrypted_data: data, secret_key: secretKey})
+        return this.clientServer.post('decrypt', {encrypted_data: data, secret_key: secretKey})
             .then((result: AxiosResponse) => {
                 return result.data;
             }).then((result: { data: { result: number[] } }) => {
@@ -259,15 +259,13 @@ export class TrustlessHealthClient {
 
     public compute(data: string, cloudKey: string) {
         console.log('Computing...');
-        this.providerServer.post('compute', {
+        return this.providerServer.post('compute', {
             cloud_key: cloudKey,
             encrypted_data: data
         }).then((result: AxiosResponse) => {
             return result.data;
         }).then((result: { data: { encrypted_result: string } }) => {
-            return {
-                encryptedResult: result.data.encrypted_result,
-            };
+            return result.data.encrypted_result;
         });
     }
 }

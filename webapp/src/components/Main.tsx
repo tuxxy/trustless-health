@@ -12,6 +12,7 @@ import {
     NavbarDivider,
     NavbarGroup,
     NavbarHeading,
+    PanelStack,
 } from "@blueprintjs/core";
 
 FocusStyleManager.onlyShowFocusOnTabs(); // Do not show blue box around all buttons
@@ -66,7 +67,7 @@ class Main extends React.Component<IProps> {
                         <PrepareDNA />
                     </div>
                     <div className={'widget-wrapper'}>
-                        <ShowCategories />
+                        <PanelStack initialPanel={{ component: ShowCategories, title: "Choose category" }} />
                     </div>
                 </div>
                 <Button onClick={this.handleAdminTransfer}>Transfer ETH from admin</Button>
