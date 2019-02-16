@@ -7,6 +7,7 @@ from flask_cors import CORS, cross_origin
 import nufhe
 import base64
 import zlib
+import numpy
 
 ctx = nufhe.Context()
 app = Flask(__name__)
@@ -22,13 +23,25 @@ compute_wasm = '''\
     local.get 1
     i32.const 8
     call $trustless_health::load_bit::he258100f90638d34
-    i32.or)
+    i32.or
+    local.get 0
+    local.get 1
+    i32.const 1
+    call $trustless_health::load_bit::he258100f90638d34
+    i32.and
+    i32.const -1
+    i32.xor)
 '''
 
 class ASTNode:
     def __init__(self, command):
         self.command = command
         self.children = []
+
+class StackVar:
+    def __init__(self, value, type):
+        self.value = value
+        self.type = type
 
 class CpuVM:
     def gate_or(self, a, b):
@@ -64,6 +77,17 @@ def generate_ast_tree_from_wasm(wasm):
             tmp_node.children.append(ASTNode(line.strip()))
     return tree
 
+def optionally_encrypt_bit(vm, var):
+    if var.type == "i32":
+        if var.value == 0 or var.value == 1:
+            return vm.gate_constant(var.value)
+        elif var.value == -1:
+            return vm.gate_constant(numpy.array([True]))
+        else:
+            print("Error: expected bit, got:", var.value)
+            return None
+    return var.value
+
 def perform_computation(vm, wasm, encrypted_data):
     tree = generate_ast_tree_from_wasm(wasm)
 
@@ -80,26 +104,38 @@ def perform_computation(vm, wasm, encrypted_data):
         keyword = cmd_arr[0]
 
         if keyword == "local.get":
-            stack.append(memory[int(cmd_arr[1])])
+            stack.append(StackVar(memory[int(cmd_arr[1])], 'i32'))
         elif keyword == "i32.const":
-            stack.append(cmd_arr[1])
+            stack.append(StackVar(int(cmd_arr[1]),'i32'))
         elif keyword == "call" and cmd_arr[1].startswith("$trustless_health::load_bit"):
             # load bit
-            tmp = int(stack[-1])
+            assert stack[-1].type == "i32"
+            tmp = stack[-1].value
+            res = StackVar(encrypted_data[tmp:tmp+1],'LweArray')
             stack.pop()
-            stack.pop()
-            stack.pop()
-            stack.append(encrypted_data[tmp:tmp+1])
-        elif keyword == "i32.or":
-            res = vm.gate_or(stack[-1], stack[-2])
             stack.pop()
             stack.pop()
             stack.append(res)
+        elif keyword == "i32.or":
+            res = vm.gate_or(optionally_encrypt_bit(vm,stack[-1]), optionally_encrypt_bit(vm,stack[-2]))
+            stack.pop()
+            stack.pop()
+            stack.append(StackVar(res, 'LweArray'))
+        elif keyword == "i32.and":
+            res = vm.gate_and(optionally_encrypt_bit(vm,stack[-1]), optionally_encrypt_bit(vm,stack[-2]))
+            stack.pop()
+            stack.pop()
+            stack.append(StackVar(res, 'LweArray'))
+        elif keyword == "i32.xor":
+            res = vm.gate_xor(optionally_encrypt_bit(vm,stack[-1]), optionally_encrypt_bit(vm,stack[-2]))
+            stack.pop()
+            stack.pop()
+            stack.append(StackVar(res, 'LweArray'))
         else:
             print("Unsupported command:", cmd.command)
             exit(1)
 
-    return stack[-1]
+    return stack[-1].value
 
 
 @app.route('/compute',methods=['POST'])
@@ -124,4 +160,3 @@ def encrypt():
 
 if __name__ == "__main__":
     app.run(debug=True, port=5001)
-
