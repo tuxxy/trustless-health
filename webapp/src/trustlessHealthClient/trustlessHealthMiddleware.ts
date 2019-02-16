@@ -13,7 +13,7 @@ export const trustlessHealthMiddleware: Middleware = ({dispatch, getState}: Midd
 
     switch (action.type) {
         case INITIALIZE_TRUSTLESS_HEALTH:
-            console.log(trustlessHealthClient.getOfferings());
+            trustlessHealthClient.initialize();
             break;
         default:
             break;
