@@ -1,7 +1,7 @@
 import Web3 from 'web3';
+import {ISignatureObj, ITxObj} from "./config";
 
 export class LocalStorageWallet {
-    private readonly web3jsWalletKey = 'web3js_wallet';
     private web3: Web3;
 
     constructor() {
@@ -11,8 +11,7 @@ export class LocalStorageWallet {
     public loadAccounts(password: string): Promise<string[]> {
         return new Promise<string[]>(async (resolve, reject) => {
             try {
-                const Wallet =
-                    this.web3.eth.accounts.wallet.load(password, this.web3jsWalletKey);
+                const Wallet = this.web3.eth.accounts.wallet.load(password);
 
                 const accounts: string[] = [];
                 for (const address of Object.keys(Wallet)) {
@@ -20,7 +19,6 @@ export class LocalStorageWallet {
                 }
                 this.web3.eth.accounts.wallet.clear();
                 resolve(accounts);
-
             } catch (e) {
                 reject(e);
             }
@@ -28,12 +26,27 @@ export class LocalStorageWallet {
     }
 
     public createAccount(password: string): Promise<void> {
-        return new Promise<void>(async (resolve, rejcet) => {
+        return new Promise<void>(async (resolve, reject) => {
             try {
                 this.web3.eth.accounts.wallet.create(1);
                 this.web3.eth.accounts.wallet.save(password);
+                this.web3.eth.accounts.wallet.clear();
+                resolve();
             } catch (e) {
-                rejcet(e);
+                reject(e);
+            }
+        })
+    }
+
+    public signTransaction(txObj: ITxObj, password: string, address: string): Promise<ISignatureObj> {
+        return new Promise<ISignatureObj>(async (resolve, reject) => {
+            try {
+                const Wallet = this.web3.eth.accounts.wallet.load(password);
+                const {r, s, v} = await this.web3.eth.accounts.signTransaction(txObj, Wallet[address].privateKey);
+                this.web3.eth.accounts.wallet.clear();
+                resolve({r, s, v})
+            } catch (e) {
+                reject(e)
             }
         })
     }
