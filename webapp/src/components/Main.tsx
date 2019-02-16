@@ -6,12 +6,12 @@ import {
     Button,
     Classes,
     FocusStyleManager,
-    Intent,
     Navbar,
     NavbarDivider,
     NavbarGroup,
     NavbarHeading,
 } from "@blueprintjs/core";
+
 FocusStyleManager.onlyShowFocusOnTabs(); // Do not show blue box around all buttons
 
 import {IMainState} from "../reducers/mainReducer";
@@ -23,13 +23,13 @@ interface IProps extends IMainState {
 
 class Main extends React.Component<IProps> {
 
+    public componentDidMount(): void {
+        this.props.initializeTrustlessHealthAction();
+    }
+
     public componentDidUpdate(): void {
         document.body.className = this.props.darkMode ? 'Core-dark bp3-dark' : 'Core';
     }
-
-    public handleClick = () => {
-        this.props.initializeTrustlessHealthAction();
-    };
 
     public render() {
         return (
@@ -51,8 +51,8 @@ class Main extends React.Component<IProps> {
                     </NavbarGroup>
                 </Navbar>
                 <p className="App-intro">
-                    To get started, edit <code>src/App.tsx</code> and save to reload.
-                    <Button onClick={this.handleClick} intent={Intent.PRIMARY}>Click</Button>
+                    Using Fully Homomorphic Encryption to provide patients
+                    with a choice of which company's health analysis tool to use.
                 </p>
             </div>
         );
