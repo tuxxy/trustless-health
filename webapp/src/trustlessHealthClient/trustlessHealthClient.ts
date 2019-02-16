@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import Web3 from 'web3';
 import {Config, ISignatureObj, ITxObj} from "./config";
 import {LocalStorageWallet} from "./localStorageWallet";
@@ -214,13 +214,11 @@ export class TrustlessHealthClient {
 
     public getKeyPair = () => {
         console.log('Getting key pair...');
-        this.clientServer.post('generate_key_pair').then(result => {
+        this.clientServer.post('generate_key_pair').then((result: AxiosResponse) => {
             return result.data;
-        }).then((data: { data: {} }) => {
-            return data.data;
-        }).then((data: { cloud_key: string, secret_key: string }) => {
-            this.secretKey = data.secret_key;
-            this.cloudKey = data.cloud_key;
+        }).then((result: { data: { cloud_key: string, secret_key: string }}) => {
+            this.secretKey = result.data.secret_key;
+            this.cloudKey = result.data.cloud_key;
             console.log('Secret and cloud keys set');
             this.encrypt([0, 1, 0, 1, 1, 1, 1, 0]);
         });
@@ -232,8 +230,10 @@ export class TrustlessHealthClient {
         this.clientServer.post('encrypt', {
             data: this.data,
             secret_key: this.secretKey,
-        }).then(result => result.data).then((data1: { data: { encrypted_data: string } }) => {
-            this.encryptedData = data1.data.encrypted_data;
+        }).then((result: AxiosResponse) => {
+            return result.data;
+        }).then((result: { data: { encrypted_data: string } }) => {
+            this.encryptedData = result.data.encrypted_data;
             console.log('Encrypted data set');
             this.compute();
         });
@@ -241,13 +241,14 @@ export class TrustlessHealthClient {
 
     public decrypt(data: string) {
         console.log('Decrypting...');
-        this.clientServer.post('decrypt', {encrypted_data: data, secret_key: this.secretKey}).then(result => {
-            return result.data;
-        }).then((data1: { data: { result: number[] } }) => {
-            this.decryptedData = data1.data.result;
-            console.log('Decrypted data set');
-            this.validate();
-        });
+        this.clientServer.post('decrypt', {encrypted_data: data, secret_key: this.secretKey})
+            .then((result: AxiosResponse) => {
+                return result.data;
+            }).then((result: { data: { result: number[] } }) => {
+                this.decryptedData = result.data.result;
+                console.log('Decrypted data set');
+                this.validate();
+            });
     }
 
     public compute() {
@@ -255,8 +256,8 @@ export class TrustlessHealthClient {
         this.providerServer.post('compute', {
             cloud_key: this.cloudKey,
             encrypted_data: this.encryptedData
-        }).then(res => {
-            return res.data;
+        }).then((result: AxiosResponse) => {
+            return result.data;
         }).then((data: { data: { encrypted_result: string } }) => {
             console.log('Computed');
             this.decrypt(data.data.encrypted_result);
