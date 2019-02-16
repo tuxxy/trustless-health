@@ -2,6 +2,7 @@ export interface ITxObj {
     nonce?: number;
     chainId: number;
     to: string;
+    from: string;
     data?: string;
     value?: string;
     gasPrice: string;
@@ -11,11 +12,7 @@ export interface ITxObj {
     v?: string;
 }
 
-export interface ISignatureObj {
-    r: string;
-    s: string;
-    v: string;
-}
+export type Callback = (error: Error, result: any) => void;
 
 export class Config {
     public static chainId = 5777;

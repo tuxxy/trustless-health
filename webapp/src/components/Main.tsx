@@ -19,6 +19,7 @@ import {IMainState} from "../reducers/mainReducer";
 interface IProps extends IMainState {
     initializeTrustlessHealthAction: () => void;
     toggleDarkModeAction: () => void;
+    runTestAction: () => void;
 }
 
 class Main extends React.Component<IProps> {
@@ -54,6 +55,7 @@ class Main extends React.Component<IProps> {
                     Using Fully Homomorphic Encryption to provide patients
                     with a choice of which company's health analysis tool to use.
                 </p>
+                <Button onClick={this.props.runTestAction}>Run test</Button>
             </div>
         );
     }

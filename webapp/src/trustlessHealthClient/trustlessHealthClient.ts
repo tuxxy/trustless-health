@@ -1,11 +1,8 @@
-import axios, { AxiosResponse } from 'axios';
+import axios, {AxiosResponse} from 'axios';
 import Web3 from 'web3';
-import {Config, ISignatureObj, ITxObj} from "./config";
-import {LocalStorageWallet} from "./localStorageWallet";
+import {Callback, Config, ITxObj} from "./config";
 
-const EthTx = require('ethereumjs-tx');
 const contractJson = require('../contracts/TrustlessHealth.json');
-const localWallet = new LocalStorageWallet();
 
 export class TrustlessHealthClient {
     public web3: Web3;
@@ -30,56 +27,14 @@ export class TrustlessHealthClient {
     }
 
     public initialize(): void {
-        this.web3 = new Web3("ws://localhost:8545");
+        this.web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
         this.contract = new this.web3.eth.Contract(this.contractABI, this.contractAddress);
-
-        const testCategoryCreation = () => {
-            return new Promise<void>(async (resolve, reject) => {
-                try {
-                    const password = '123';
-                    const privateKeyAdmin = '0xca15bedb59f1aadc2181bbbc85ea0fd7a0ce48769ea981884a63767dae35c26a';
-
-                    let accounts = await localWallet.loadAccounts(password);
-                    if (accounts.length === 0) {
-                        await localWallet.createAccount(password);
-                        accounts = await localWallet.loadAccounts(password);
-                    }
-                    const selectedAccount = accounts[0];
-                    console.log('All accounts', accounts);
-                    console.log('Selected account', selectedAccount);
-
-                    // Send eth
-                    await this.sendEthFromPrivateKey(selectedAccount, privateKeyAdmin, 1);
-
-                    // Get categories before creation
-                    console.log('Categories before', this.getCategories());
-
-                    // Create category
-                    const txObj = this.unsignedCreateCategory('DNA Test');
-                    const signatureObj = await localWallet.signTransaction(txObj, password, selectedAccount);
-                    await this.sendSignedTransaction(txObj, signatureObj);
-
-                    // Get categories after creation
-                    console.log('Categories after', this.getCategories());
-
-                    resolve();
-                } catch (e) {
-                    reject(e)
-                }
-            })
-        };
-
-        testCategoryCreation().then( () => {
-            console.log('Completed test!');
-        }).catch( error => {
-            console.error(error);
-        })
 
     }
 
-    public sendEthFromPrivateKey(receivingAddress: string, privateKey: string, quantity: number): Promise<void> {
+    public SendEthFromPrivateKey(receivingAddress: string, privateKey: string, quantity: number): Promise<void> {
         return new Promise<void>(async (resolve, reject) => {
-            const { numberToHex } = this.web3.utils;
+            const {numberToHex} = this.web3.utils;
             const txObject = {
                 gasLimit: numberToHex(Config.gasLimit),
                 gasPrice: numberToHex(Config.gasPrice),
@@ -87,88 +42,101 @@ export class TrustlessHealthClient {
                 value: quantity * 10 ** 18,
             };
 
-            const { rawTransaction } = await this.web3.eth.accounts.signTransaction(txObject, privateKey);
+            const {rawTransaction} = await this.web3.eth.accounts.signTransaction(txObject, privateKey);
             // @ts-ignore
             this.web3.eth.sendSignedTransaction(rawTransaction)
                 .on('receipt', (result: any) => {
                     console.log(result);
                     resolve();
                 }).on('error', (error: Error) => {
-                    console.error(error)
+                console.error(error)
             });
         });
     }
 
+
     // ------------------------------------- Methods for Smart Contract ----------------------------------------------
 
-    public sendSignedTransaction(rawTxObj: ITxObj, signObj: ISignatureObj): Promise<void> {
-        return new Promise<void>(async (resolve, reject) => {
-            const signedTxObj = {
-                ...rawTxObj,
-                r: signObj.r,
-                s: signObj.s,
-                v: signObj.v,
+    public CreateCategory(categoryName: string, callback: Callback): void {
+        try {
+            const fromAddress = this.web3.eth.defaultAccount;
+            if (fromAddress === null) {
+                callback(new Error('Account not set'), undefined);
+                return;
+            }
+            const {numberToHex} = this.web3.utils;
+            const encodedTx = this.contract.methods.createCategory(categoryName).encodeABI();
+
+            const txObj: ITxObj = {
+                chainId: Config.chainId,
+                data: encodedTx,
+                from: fromAddress,
+                gasLimit: numberToHex(Config.gasLimit),
+                gasPrice: numberToHex(Config.gasPrice),
+                to: this.contractAddress
             };
-            const tx = new EthTx(signedTxObj);
-            const serializedTx = tx.serialize();
+            this.web3.eth.sendTransaction(txObj, callback);
 
-            this.web3.eth.sendSignedTransaction(`0x${serializedTx.toString('hex')}`)
-                .on('receipt', (result) => {
-                    resolve();
-                })
-                .on('error', (error: Error) => {
-                    reject(error);
-                });
-        });
+        } catch (error) {
+            callback(error, undefined);
+            return;
+        }
     }
 
-    public unsignedCreateCategory(categoryName: string): ITxObj {
-        const {numberToHex} = this.web3.utils;
-        const encodedTx = this.contract.methods.createCategory(categoryName).encodeABI();
-
-        return {
-            chainId: Config.chainId,
-            data: encodedTx,
-            gasLimit: numberToHex(Config.gasLimit),
-            gasPrice: numberToHex(Config.gasPrice),
-            to: this.contractAddress
-        };
-    }
-
-    public unsignedSubmitAnalysisOffering(
+    public SubmitAnalysisOffering(
+        fromAddress: string,
         host: string,
         paymentAddress: string,
         price: number,
         categoryId: number,
         title: string,
-        description: string): ITxObj {
-        const {numberToHex} = this.web3.utils;
-        const encodedTx = this.contract.methods.submitAnalysisOffering(
-            host, paymentAddress, price, categoryId, title, description).encodeABI();
+        description: string,
+        callback: Callback): void {
+        try {
+            const {numberToHex} = this.web3.utils;
+            const encodedTx = this.contract.methods.submitAnalysisOffering(
+                host, paymentAddress, price, categoryId, title, description).encodeABI();
 
-        return {
-            chainId: Config.chainId,
-            data: encodedTx,
-            gasLimit: numberToHex(Config.gasLimit),
-            gasPrice: numberToHex(Config.gasPrice),
-            to: this.contractAddress
-        };
+            const txObj: ITxObj = {
+                chainId: Config.chainId,
+                data: encodedTx,
+                from: fromAddress,
+                gasLimit: numberToHex(Config.gasLimit),
+                gasPrice: numberToHex(Config.gasPrice),
+                to: this.contractAddress
+            };
+            this.web3.eth.sendTransaction(txObj, callback);
+
+        } catch (error) {
+            callback(error, undefined)
+        }
     }
 
-    public unsignedPurchaseOffering(offeringId: number, categoryId: number): ITxObj {
-        const {numberToHex} = this.web3.utils;
-        const encodedTx = this.contract.methods.purchaseOffering(offeringId, categoryId).encodeABI();
+    public SubmitPurchaseOffering(
+        fromAddress: string,
+        offeringId: number,
+        categoryId: number,
+        callback: Callback): void {
+        try {
+            const {numberToHex} = this.web3.utils;
+            const encodedTx = this.contract.methods.purchaseOffering(offeringId, categoryId).encodeABI();
 
-        return {
-            chainId: Config.chainId,
-            data: encodedTx,
-            gasLimit: numberToHex(Config.gasLimit),
-            gasPrice: numberToHex(Config.gasPrice),
-            to: this.contractAddress
-        };
+            const txObj: ITxObj = {
+                chainId: Config.chainId,
+                data: encodedTx,
+                from: fromAddress,
+                gasLimit: numberToHex(Config.gasLimit),
+                gasPrice: numberToHex(Config.gasPrice),
+                to: this.contractAddress
+            };
+            this.web3.eth.sendTransaction(txObj, callback);
+
+        } catch (error) {
+            callback(error, undefined)
+        }
     }
 
-    public categoryExists(categoryId: number): Promise<boolean> {
+    public CategoryExists(categoryId: number): Promise<boolean> {
         return new Promise<boolean>(async (resolve, reject) => {
             try {
                 resolve(await this.contract.methods.categoryExists(categoryId).call());
@@ -178,7 +146,7 @@ export class TrustlessHealthClient {
         })
     }
 
-    public getCategories(): Promise<string[]> {
+    public GetCategories(): Promise<string[]> {
         return new Promise<string[]>(async (resolve, reject) => {
             try {
                 const categories = await this.contract.methods.getCategories().call();
@@ -189,7 +157,7 @@ export class TrustlessHealthClient {
         });
     }
 
-    public getOfferings(categoryId: number): Promise<string[]> {
+    public GetOfferings(categoryId: number): Promise<string[]> {
         return new Promise<string[]>(async (resolve, reject) => {
             try {
                 const offerings = await this.contract.methods.getOfferings(categoryId).call();
@@ -200,10 +168,10 @@ export class TrustlessHealthClient {
         });
     }
 
-    public registerPurchasedOfferingListener(callback: (error: Error, result: any) => void): void {
+    public RegisterPurchasedOfferingListener(callback: (error: Error, result: any) => void): void {
         try {
             this.contract.events.purchasedOffering({
-                filter: { }
+                filter: {}
             }, callback);
         } catch (e) {
             console.error(e);
@@ -216,7 +184,7 @@ export class TrustlessHealthClient {
         console.log('Getting key pair...');
         this.clientServer.post('generate_key_pair').then((result: AxiosResponse) => {
             return result.data;
-        }).then((result: { data: { cloud_key: string, secret_key: string }}) => {
+        }).then((result: { data: { cloud_key: string, secret_key: string } }) => {
             this.secretKey = result.data.secret_key;
             this.cloudKey = result.data.cloud_key;
             console.log('Secret and cloud keys set');
@@ -245,10 +213,10 @@ export class TrustlessHealthClient {
             .then((result: AxiosResponse) => {
                 return result.data;
             }).then((result: { data: { result: number[] } }) => {
-                this.decryptedData = result.data.result;
-                console.log('Decrypted data set');
-                this.validate();
-            });
+            this.decryptedData = result.data.result;
+            console.log('Decrypted data set');
+            this.validate();
+        });
     }
 
     public compute() {

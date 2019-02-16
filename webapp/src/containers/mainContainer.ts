@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
 import { RootActions } from '../actions';
-import { toggleDarkModeAction } from "../actions/MainActions";
+import {runTestAction, toggleDarkModeAction} from "../actions/MainActions";
 import Main from '../components/Main';
 import { IRootState } from '../reducers';
 import {initializeTrustlessHealthAction} from "../trustlessHealthClient/trustlessHealthActions";
@@ -15,6 +15,7 @@ const mapDispatchToProps = (dispatch: Dispatch<RootActions>) =>
     bindActionCreators(
         {
             initializeTrustlessHealthAction,
+            runTestAction,
             toggleDarkModeAction,
         },
         dispatch
