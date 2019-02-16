@@ -5,8 +5,28 @@ import {Callback, Config, ITxObj} from "./config";
 const contractJson = require('../contracts/TrustlessHealth.json');
 
 export class TrustlessHealthClient {
-    public web3: Web3;
+    public static encode(data: string) {
+        const result = [];
+        for (const i of data) {
+            switch(i) {
+                case 'A':
+                    result.push(0, 0, 0, 1);
+                    break;
+                case 'T':
+                    result.push(0, 0, 1, 0);
+                    break;
+                case 'G':
+                    result.push(0, 1, 0, 0);
+                    break;
+                case 'C':
+                    result.push(1, 0, 0, 0);
+                    break;
+            }
+        }
+        return result;
+    }
 
+    public web3: Web3;
     public contractAddress = contractJson.networks["5777"].address;
     public contractABI = contractJson.abi;
     public contract: any = {};
@@ -16,11 +36,6 @@ export class TrustlessHealthClient {
     private readonly providerServer = axios.create({
         baseURL: 'http://localhost:5001/',
     });
-    private secretKey: string;
-    private cloudKey: string;
-    private data: number[];
-    private encryptedData: string;
-    private decryptedData: number[];
 
     constructor() {
         this.initialize();
@@ -210,58 +225,49 @@ export class TrustlessHealthClient {
 
     public getKeyPair = () => {
         console.log('Getting key pair...');
-        this.clientServer.post('generate_key_pair').then((result: AxiosResponse) => {
+        return this.clientServer.post('generate_key_pair').then((result: AxiosResponse) => {
             return result.data;
-        }).then((result: { data: { cloud_key: string, secret_key: string } }) => {
-            this.secretKey = result.data.secret_key;
-            this.cloudKey = result.data.cloud_key;
-            console.log('Secret and cloud keys set');
-            this.encrypt([0, 1, 0, 1, 1, 1, 1, 0]);
+        }).then((result: { data: { cloud_key: string, secret_key: string }}) => {
+            return {
+                cloudKey: result.data.cloud_key,
+                secretKey: result.data.secret_key
+            };
         });
     };
 
-    public encrypt(data: number[]) {
+    public encrypt(data: number[], secretKey: string) {
         console.log('Encrypting...');
-        this.data = data;
         this.clientServer.post('encrypt', {
-            data: this.data,
-            secret_key: this.secretKey,
+            data,
+            secret_key: secretKey,
         }).then((result: AxiosResponse) => {
             return result.data;
         }).then((result: { data: { encrypted_data: string } }) => {
-            this.encryptedData = result.data.encrypted_data;
-            console.log('Encrypted data set');
-            this.compute();
+            return result.data.encrypted_data;
         });
     }
 
-    public decrypt(data: string) {
+    public decrypt(data: string, secretKey: string) {
         console.log('Decrypting...');
-        this.clientServer.post('decrypt', {encrypted_data: data, secret_key: this.secretKey})
+        this.clientServer.post('decrypt', {encrypted_data: data, secret_key: secretKey})
             .then((result: AxiosResponse) => {
                 return result.data;
             }).then((result: { data: { result: number[] } }) => {
-            this.decryptedData = result.data.result;
-            console.log('Decrypted data set');
-            this.validate();
+            return result.data.result;
         });
     }
 
-    public compute() {
+    public compute(data: string, cloudKey: string) {
         console.log('Computing...');
         this.providerServer.post('compute', {
-            cloud_key: this.cloudKey,
-            encrypted_data: this.encryptedData
+            cloud_key: cloudKey,
+            encrypted_data: data
         }).then((result: AxiosResponse) => {
             return result.data;
-        }).then((data: { data: { encrypted_result: string } }) => {
-            console.log('Computed');
-            this.decrypt(data.data.encrypted_result);
+        }).then((result: { data: { encrypted_result: string } }) => {
+            return {
+                encryptedResult: result.data.encrypted_result,
+            };
         });
-    }
-
-    public validate() {
-        console.log(this.data);
-        console.log(this.decryptedData);
     }
 }

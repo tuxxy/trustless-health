@@ -1,5 +1,7 @@
 import * as React from 'react';
-import '../App.css'
+import '../App.css';
+import PrepareDNA from "./PrepareDNA";
+import {ShowCategories} from "./showCategories";
 
 import {
     Alignment,
@@ -55,10 +57,18 @@ class Main extends React.Component<IProps> {
                         />
                     </NavbarGroup>
                 </Navbar>
-                <p className="App-intro">
-                    Using Fully Homomorphic Encryption to provide patients
-                    with a choice of which company's health analysis tool to use.
-                </p>
+                <div className={'page-wrapper'}>
+                    <p className="App-intro">
+                        Using Fully Homomorphic Encryption to provide patients
+                        with a choice of which company's health analysis tool to use.
+                    </p>
+                    <div className={'widget-wrapper'}>
+                        <PrepareDNA />
+                    </div>
+                    <div className={'widget-wrapper'}>
+                        <ShowCategories />
+                    </div>
+                </div>
                 <Button onClick={this.handleAdminTransfer}>Transfer ETH from admin</Button>
             </div>
         );

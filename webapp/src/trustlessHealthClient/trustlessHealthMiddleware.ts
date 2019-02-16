@@ -17,8 +17,6 @@ export const trustlessHealthMiddleware: Middleware = ({dispatch, getState}: Midd
 
     switch (action.type) {
         case INITIALIZE_TRUSTLESS_HEALTH:
-
-            trustlessHealthClient.getKeyPair();
             break;
 
         case TRANSFER_ETH_FROM_PRIVATE_KEY:

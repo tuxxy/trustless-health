@@ -11,7 +11,15 @@
 }
 
 .App {
-  text-align: center;
+
+}
+
+.page-wrapper {
+  padding: 10px;
+}
+
+.widget-wrapper {
+  width: 50%;
 }
 
 .App-logo {
@@ -33,9 +41,19 @@
 .App-intro {
   padding: 20px;
   font-size: large;
+  text-align: center;
 }
 
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
+}
+
+.category-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.category-wrapper .category {
+  flex: 0 0 33%;
 }
