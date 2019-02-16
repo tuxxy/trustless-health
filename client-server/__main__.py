@@ -12,12 +12,18 @@ ctx = nufhe.Context()
 app = Flask(__name__)
 CORS(app)
 
-@app.route("/generate_secret_key",methods=['POST'])
+@app.route("/generate_key_pair",methods=['POST'])
 def generate_secret_key():
-    secret_key = ctx.make_secret_key()
-    obj = {}
-    obj["secret_key"] = binascii.hexlify(secret_key.dumps()).decode('ascii')
-    return jsonify(obj)
+    secret_key, cloud_key = ctx.make_key_pair()
+    return jsonify(
+        {
+            "result":"success",
+            "data": {
+                "secret_key": binascii.hexlify(secret_key.dumps()).decode('ascii'),
+                "public_key": binascii.hexlify(cloud_key.dumps()).decode('ascii')
+            }
+        }
+    )
 
 @app.route('/encrypt',methods=['POST'])
 def encrypt():
@@ -25,7 +31,15 @@ def encrypt():
     secret_key = nufhe.NuFHESecretKey.loads(binascii.unhexlify(data['secret_key']), ctx.thread)
     data_to_encrypt = data['data']
     ciphertext = ctx.encrypt(secret_key, data_to_encrypt)
-    return jsonify({"result":"success", "data": {"ciphertext": binascii.hexlify(ciphertext.dumps()).decode('ascii')}})
+    return jsonify(
+        {
+            "result":"success",
+            "data":
+                {
+                    "ciphertext": binascii.hexlify(ciphertext.dumps()).decode('ascii')
+                }
+        }
+    )
 
 if __name__ == "__main__":
     app.run(debug=True)
