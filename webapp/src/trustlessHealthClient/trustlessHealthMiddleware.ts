@@ -14,6 +14,7 @@ export const trustlessHealthMiddleware: Middleware = ({dispatch, getState}: Midd
     switch (action.type) {
         case INITIALIZE_TRUSTLESS_HEALTH:
             console.log(trustlessHealthClient.getCategories());
+            trustlessHealthClient.getKeyPair();
             break;
         default:
             break;
