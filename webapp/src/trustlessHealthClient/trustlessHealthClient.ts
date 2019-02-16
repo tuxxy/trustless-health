@@ -30,7 +30,7 @@ export class TrustlessHealthClient {
     }
 
     public initialize(): void {
-        this.web3 = new Web3("ws://localhost:7545");
+        this.web3 = new Web3("ws://localhost:8545");
         this.contract = new this.web3.eth.Contract(this.contractABI, this.contractAddress);
 
         const testCategoryCreation = () => {

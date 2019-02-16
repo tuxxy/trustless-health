@@ -5,7 +5,7 @@ export class LocalStorageWallet {
     private web3: Web3;
 
     constructor() {
-        this.web3 = new Web3("ws://localhost:7545");
+        this.web3 = new Web3("ws://localhost:8545");
     }
 
     public loadAccounts(password: string): Promise<string[]> {
