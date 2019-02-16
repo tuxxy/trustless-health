@@ -20,7 +20,7 @@ def encrypt():
     cloud_key = nufhe.NuFHECloudKey.loads(zlib.decompress(base64.b64decode(data['cloud_key'])), ctx.thread)
 
     vm = ctx.make_virtual_machine(cloud_key)
-    result = vm.gate_not(encrypted_data)
+    result = vm.gate_and(vm.gate_not(encrypted_data[0:4]), encrypted_data[0:4])
 
     return jsonify(
         {
