@@ -1,29 +1,43 @@
 import Web3 from 'web3';
 
-/* tslint:disable */
+const contractJson = require('../contracts/TrustlessHealth.json');
 
 export class TrustlessHealthClient {
     public web3: Web3;
 
-    public contractAddress: string;
-    public contractABI: any[] = [];
+    public contractAddress = contractJson.networks["5777"].address;
+    public contractABI = contractJson.abi;
     public contract: any = {};
 
     constructor() {
-        this.web3 = new Web3(Web3.givenProvider || "ws://localhost:8546");
+        this.initialize();
     }
 
     public initialize(): void {
+        this.web3 = new Web3("ws://localhost:7545");
         this.contract = new this.web3.eth.Contract(this.contractABI, this.contractAddress);
     }
 
-    public getCategories(): string[] {
-
-        return [];
+    public getCategories(): Promise<string[]> {
+        return new Promise<string[]>(async (resolve, reject) => {
+            try {
+                const categories = await this.contract.methods.getCategories().call();
+                resolve(categories);
+            } catch (e) {
+                reject(e)
+            }
+        });
     }
 
-    public getOfferings(): string {
-        return 'Hello world';
+    public getOfferings(categoryId: number): Promise<string[]> {
+        return new Promise<string[]>(async (resolve, reject) => {
+            try {
+                const offerings = await this.contract.methods.getOfferings(categoryId).call();
+                resolve(offerings)
+            } catch (e) {
+                reject(e)
+            }
+        });
     }
 
 }
