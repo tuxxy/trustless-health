@@ -19,7 +19,7 @@ import {IMainState} from "../reducers/mainReducer";
 interface IProps extends IMainState {
     initializeTrustlessHealthAction: () => void;
     toggleDarkModeAction: () => void;
-    runTestAction: () => void;
+    transferEthFromPrivateKey: (quantity: number) => void;
 }
 
 class Main extends React.Component<IProps> {
@@ -31,6 +31,10 @@ class Main extends React.Component<IProps> {
     public componentDidUpdate(): void {
         document.body.className = this.props.darkMode ? 'Core-dark bp3-dark' : 'Core';
     }
+
+    public handleAdminTransfer = () => {
+        this.props.transferEthFromPrivateKey(1)
+    };
 
     public render() {
         return (
@@ -55,7 +59,7 @@ class Main extends React.Component<IProps> {
                     Using Fully Homomorphic Encryption to provide patients
                     with a choice of which company's health analysis tool to use.
                 </p>
-                <Button onClick={this.props.runTestAction}>Run test</Button>
+                <Button onClick={this.handleAdminTransfer}>Transfer ETH from admin</Button>
             </div>
         );
     }

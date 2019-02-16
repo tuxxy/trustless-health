@@ -17,12 +17,12 @@ export const trustlessHealthMiddleware: Middleware = ({dispatch, getState}: Midd
 
     switch (action.type) {
         case INITIALIZE_TRUSTLESS_HEALTH:
-            console.log(trustlessHealthClient.GetCategories());
+
             trustlessHealthClient.getKeyPair();
             break;
 
         case TRANSFER_ETH_FROM_PRIVATE_KEY:
-            trustlessHealthClient.SendEthFromPrivateKey(action.receivingAddress, action.privateKey, action.quantity)
+            trustlessHealthClient.SendEthFromPrivateKey(action.quantity)
                 .then(() => {
                     console.log('Transaction sent')
                 })

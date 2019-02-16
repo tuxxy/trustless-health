@@ -53,9 +53,6 @@ export interface ISubmitAnalysisOffering extends Action {
     description: string;
 }
 
-export
-
-
 export type TrustlessHealthActions =
     | IInitializeTrustlessHealthAction
     | ITransferEthFromPrivateKeyAction

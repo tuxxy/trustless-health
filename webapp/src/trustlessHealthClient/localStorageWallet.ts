@@ -1,3 +1,4 @@
+/*
 import Web3 from 'web3';
 import {ISignatureObj, ITxObj} from "./config";
 
@@ -54,3 +55,4 @@ export class LocalStorageWallet {
 
 
 }
+*/

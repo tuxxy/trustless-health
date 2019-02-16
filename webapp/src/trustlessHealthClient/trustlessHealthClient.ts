@@ -30,10 +30,30 @@ export class TrustlessHealthClient {
         this.web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
         this.contract = new this.web3.eth.Contract(this.contractABI, this.contractAddress);
 
+        this.GetCurrentAccount().then(account => {
+            console.log('Account', account);
+        });
     }
 
-    public SendEthFromPrivateKey(receivingAddress: string, privateKey: string, quantity: number): Promise<void> {
+    public GetCurrentAccount(): Promise<string> {
+        return new Promise<string>(async (resolve, reject) => {
+            this.web3.eth.getAccounts().then(accounts => {
+                resolve(accounts[0])
+            }).catch(error => {
+                console.error('Could not get account!');
+            })
+        })
+    }
+
+    public SendEthFromPrivateKey(quantity: number): Promise<void> {
         return new Promise<void>(async (resolve, reject) => {
+            const privateKey = '0xca15bedb59f1aadc2181bbbc85ea0fd7a0ce48769ea981884a63767dae35c26a';
+            const receivingAddress = await this.GetCurrentAccount();
+            console.log(receivingAddress);
+            if (receivingAddress === null || receivingAddress === undefined) {
+                reject(new Error('Account not set'));
+                return;
+            }
             const {numberToHex} = this.web3.utils;
             const txObject = {
                 gasLimit: numberToHex(Config.gasLimit),
@@ -51,32 +71,31 @@ export class TrustlessHealthClient {
                 }).on('error', (error: Error) => {
                 console.error(error)
             });
-        });
+        })
     }
-
 
     // ------------------------------------- Methods for Smart Contract ----------------------------------------------
 
     public CreateCategory(categoryName: string, callback: Callback): void {
         try {
-            const fromAddress = this.web3.eth.defaultAccount;
-            if (fromAddress === null) {
-                callback(new Error('Account not set'), undefined);
-                return;
-            }
-            const {numberToHex} = this.web3.utils;
-            const encodedTx = this.contract.methods.createCategory(categoryName).encodeABI();
+            this.GetCurrentAccount().then(fromAddress => {
+                if (fromAddress === null || fromAddress === undefined) {
+                    callback(new Error('Account not set!'), undefined);
+                    return;
+                }
+                const {numberToHex} = this.web3.utils;
+                const encodedTx = this.contract.methods.createCategory(categoryName).encodeABI();
 
-            const txObj: ITxObj = {
-                chainId: Config.chainId,
-                data: encodedTx,
-                from: fromAddress,
-                gasLimit: numberToHex(Config.gasLimit),
-                gasPrice: numberToHex(Config.gasPrice),
-                to: this.contractAddress
-            };
-            this.web3.eth.sendTransaction(txObj, callback);
-
+                const txObj: ITxObj = {
+                    chainId: Config.chainId,
+                    data: encodedTx,
+                    from: fromAddress,
+                    gasLimit: numberToHex(Config.gasLimit),
+                    gasPrice: numberToHex(Config.gasPrice),
+                    to: this.contractAddress
+                };
+                this.web3.eth.sendTransaction(txObj, callback);
+            })
         } catch (error) {
             callback(error, undefined);
             return;
@@ -84,7 +103,6 @@ export class TrustlessHealthClient {
     }
 
     public SubmitAnalysisOffering(
-        fromAddress: string,
         host: string,
         paymentAddress: string,
         price: number,
@@ -93,19 +111,25 @@ export class TrustlessHealthClient {
         description: string,
         callback: Callback): void {
         try {
-            const {numberToHex} = this.web3.utils;
-            const encodedTx = this.contract.methods.submitAnalysisOffering(
-                host, paymentAddress, price, categoryId, title, description).encodeABI();
+            this.GetCurrentAccount().then(fromAddress => {
+                if (fromAddress === null || fromAddress === undefined) {
+                    callback(new Error('Account not set!'), undefined);
+                    return;
+                }
+                const {numberToHex} = this.web3.utils;
+                const encodedTx = this.contract.methods.submitAnalysisOffering(
+                    host, paymentAddress, price, categoryId, title, description).encodeABI();
 
-            const txObj: ITxObj = {
-                chainId: Config.chainId,
-                data: encodedTx,
-                from: fromAddress,
-                gasLimit: numberToHex(Config.gasLimit),
-                gasPrice: numberToHex(Config.gasPrice),
-                to: this.contractAddress
-            };
-            this.web3.eth.sendTransaction(txObj, callback);
+                const txObj: ITxObj = {
+                    chainId: Config.chainId,
+                    data: encodedTx,
+                    from: fromAddress,
+                    gasLimit: numberToHex(Config.gasLimit),
+                    gasPrice: numberToHex(Config.gasPrice),
+                    to: this.contractAddress
+                };
+                this.web3.eth.sendTransaction(txObj, callback);
+            })
 
         } catch (error) {
             callback(error, undefined)
@@ -113,24 +137,28 @@ export class TrustlessHealthClient {
     }
 
     public SubmitPurchaseOffering(
-        fromAddress: string,
         offeringId: number,
         categoryId: number,
         callback: Callback): void {
         try {
-            const {numberToHex} = this.web3.utils;
-            const encodedTx = this.contract.methods.purchaseOffering(offeringId, categoryId).encodeABI();
+            this.GetCurrentAccount().then(fromAddress => {
+                if (fromAddress === null || fromAddress === undefined) {
+                    callback(new Error('Account not set!'), undefined);
+                    return;
+                }
+                const {numberToHex} = this.web3.utils;
+                const encodedTx = this.contract.methods.purchaseOffering(offeringId, categoryId).encodeABI();
 
-            const txObj: ITxObj = {
-                chainId: Config.chainId,
-                data: encodedTx,
-                from: fromAddress,
-                gasLimit: numberToHex(Config.gasLimit),
-                gasPrice: numberToHex(Config.gasPrice),
-                to: this.contractAddress
-            };
-            this.web3.eth.sendTransaction(txObj, callback);
-
+                const txObj: ITxObj = {
+                    chainId: Config.chainId,
+                    data: encodedTx,
+                    from: fromAddress,
+                    gasLimit: numberToHex(Config.gasLimit),
+                    gasPrice: numberToHex(Config.gasPrice),
+                    to: this.contractAddress
+                };
+                this.web3.eth.sendTransaction(txObj, callback);
+            })
         } catch (error) {
             callback(error, undefined)
         }
