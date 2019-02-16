@@ -41,5 +41,23 @@ def encrypt():
         }
     )
 
+@app.route('/decrypt',methods=['POST'])
+def decrypt():
+    data = request.json
+    encrypted_data = nufhe.LweSampleArray.loads(binascii.unhexlify(data['encrypted_data']), ctx.thread)
+    secret_key = nufhe.NuFHESecretKey.loads(binascii.unhexlify(data['secret_key']), ctx.thread)
+
+    result_bits = ctx.decrypt(secret_key, encrypted_data)
+
+    return jsonify(
+        {
+            "result":"success",
+            "data":
+                {
+                    "result": result_bits
+                }
+        }
+    )
+
 if __name__ == "__main__":
     app.run(debug=True)
