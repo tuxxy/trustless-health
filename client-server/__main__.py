@@ -59,7 +59,7 @@ def decrypt():
             "result":"success",
             "data":
                 {
-                    "result": result_bits
+                    "result": result_bits.tolist()
                 }
         }
     )
