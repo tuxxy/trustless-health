@@ -18,6 +18,7 @@ export const mainReducer: Reducer<IMainState> = (
         case TOGGLE_DARK_MODE:
             return {
                 ...state,
+                darkMode: !state.darkMode
             };
         default:
             return state;

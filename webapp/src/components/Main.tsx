@@ -5,16 +5,26 @@ import {
     Alignment,
     Button,
     Classes,
+    FocusStyleManager,
     Intent,
     Navbar,
     NavbarDivider,
     NavbarGroup,
     NavbarHeading,
 } from "@blueprintjs/core";
-import logo from '../logo.svg';
+FocusStyleManager.onlyShowFocusOnTabs(); // Do not show blue box around all buttons
 
-class Main extends React.Component {
+import {IMainState} from "../reducers/mainReducer";
 
+interface IProps extends IMainState {
+    toggleDarkModeAction: () => void;
+}
+
+class Main extends React.Component<IProps> {
+
+    public componentDidUpdate(): void {
+        document.body.className = this.props.darkMode ? 'Core-dark bp3-dark' : 'Core';
+    }
 
     public render() {
         return (
@@ -27,13 +37,14 @@ class Main extends React.Component {
                         <NavbarDivider/>
                         <Button className={Classes.MINIMAL} icon="home" text="Home"/>
                         <Button className={Classes.MINIMAL} icon="settings" text="Options"/>
-                        <Button className={Classes.MINIMAL} icon="lightbulb" text="Dark Mode"/>
+                        <Button
+                            className={Classes.MINIMAL}
+                            icon="lightbulb"
+                            text="Dark Mode"
+                            onClick={this.props.toggleDarkModeAction}
+                        />
                     </NavbarGroup>
                 </Navbar>
-                <header className="App-header">
-                    <img src={logo} className="App-logo" alt="logo"/>
-                    <h1 className="App-title">Welcome to Trustless Health</h1>
-                </header>
                 <p className="App-intro">
                     To get started, edit <code>src/App.tsx</code> and save to reload.
                     <Button onClick={this.handleClick} intent={Intent.PRIMARY}>Click</Button>
