@@ -36,7 +36,7 @@ def encrypt():
             "result":"success",
             "data":
                 {
-                    "ciphertext": binascii.hexlify(ciphertext.dumps()).decode('ascii')
+                    "encrypted_data": binascii.hexlify(ciphertext.dumps()).decode('ascii')
                 }
         }
     )
