@@ -17,7 +17,7 @@ CORS(app)
 def encrypt():
     data = request.json
     encrypted_data = nufhe.LweSampleArray.loads(base64.b64decode(data['encrypted_data']), ctx.thread)
-    cloud_key = nufhe.NuFHECloudKey.loads(zlib.decompress(base64.b64decode(data['cloud_key']), ctx.thread))
+    cloud_key = nufhe.NuFHECloudKey.loads(zlib.decompress(base64.b64decode(data['cloud_key'])), ctx.thread)
 
     vm = ctx.make_virtual_machine(cloud_key)
     result = vm.gate_not(encrypted_data)
