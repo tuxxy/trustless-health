@@ -62,21 +62,14 @@ export const trustlessHealthMiddleware: Middleware = ({dispatch, getState}: Midd
             break;
 
         case CREATE_CATEGORY:
-            trustlessHealthClient.CategoryExists(action.categoryId)
-                .then((exists: boolean) => {
-                    if (exists) {
-                        console.error('Category already exits!');
-                    } else {
-                        const createCategoryCallback = (error: Error, result: any) => {
-                            if (!error) {
-                                dispatch(getCategoriesAction());
-                            } else {
-                                console.error('Creating category failed.');
-                            }
-                        };
-                        trustlessHealthClient.CreateCategory(action.categoryName, createCategoryCallback);
-                    }
-                });
+            const createCategoryCallback = (error: Error, result: any) => {
+                if (!error) {
+                    dispatch(getCategoriesAction());
+                } else {
+                    console.error('Creating category failed.');
+                }
+            };
+            trustlessHealthClient.CreateCategory(action.categoryName, createCategoryCallback);
             break;
 
         case SUBMIT_ANALYSIS_OFFERING:

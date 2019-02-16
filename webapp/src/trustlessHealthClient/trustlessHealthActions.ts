@@ -7,7 +7,6 @@ export const GET_CATEGORIES = 'GET_CATEGORIES';
 export const RECEIVE_CATEGORIES = 'RECEIVE_CATEGORIES';
 export const GET_OFFERINGS = 'GET_OFFERINGS';
 export const RECEIVE_OFFERINGS = 'RECEIVE_OFFERINGS';
-export const CATEGORY_EXISTS = 'CATEGORY_EXISTS';
 export const CREATE_CATEGORY = 'CREATE_CATEGORY';
 export const SUBMIT_ANALYSIS_OFFERING = 'SUBMIT_ANALYSIS_OFFERING';
 export const SUBMIT_PURCHASE_OFFERING = 'SUBMIT_PURCHASE_OFFERING';
@@ -72,24 +71,12 @@ export const receiveOfferingsAction: ActionCreator<IReceiveOfferingsAction> = (o
     type: RECEIVE_OFFERINGS,
 });
 
-export interface ICategoryExistsAction extends Action {
-    type: 'CATEGORY_EXISTS';
-    categoryId: number;
-}
-
-export const categoryExistsAction: ActionCreator<ICategoryExistsAction> = (categoryId) => ({
-    categoryId,
-    type: CATEGORY_EXISTS,
-});
-
 export interface ICreateCategoryAction extends Action {
     type: 'CREATE_CATEGORY';
     categoryName: string;
-    categoryId: number;
 }
 
-export const createCategoryAction: ActionCreator<ICreateCategoryAction> = (categoryName, categoryId) => ({
-    categoryId,
+export const createCategoryAction: ActionCreator<ICreateCategoryAction> = (categoryName) => ({
     categoryName,
     type: CREATE_CATEGORY,
 });
