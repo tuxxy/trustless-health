@@ -11,7 +11,16 @@
 }
 
 .App {
-  text-align: center;
+
+}
+
+.page-wrapper {
+  padding: 10px;
+}
+
+.widget-wrapper {
+  width: 50%;
+  margin: 10px;
 }
 
 .App-logo {
@@ -33,9 +42,26 @@
 .App-intro {
   padding: 20px;
   font-size: large;
+  text-align: center;
 }
 
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
+}
+
+.category-wrapper {
+  margin: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.category-wrapper .category {
+  flex: 0 0 30%;
+  margin: 10px 0;
+}
+
+.bp3-panel-stack-view {
+  position: absolute;
 }
