@@ -4,9 +4,8 @@
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import json
+import base64
 import nufhe
-import binascii
 
 ctx = nufhe.Context()
 app = Flask(__name__)
@@ -19,8 +18,8 @@ def generate_secret_key():
         {
             "result":"success",
             "data": {
-                "secret_key": binascii.hexlify(secret_key.dumps()).decode('ascii'),
-                "cloud_key": binascii.hexlify(cloud_key.dumps()).decode('ascii')
+                "secret_key": base64.b64encode(secret_key.dumps()).decode('ascii'),
+                "cloud_key": base64.b64encode(cloud_key.dumps()).decode('ascii')
             }
         }
     )
@@ -28,7 +27,7 @@ def generate_secret_key():
 @app.route('/encrypt',methods=['POST'])
 def encrypt():
     data = request.json
-    secret_key = nufhe.NuFHESecretKey.loads(binascii.unhexlify(data['secret_key']), ctx.thread)
+    secret_key = nufhe.NuFHESecretKey.loads(base64.b64decode(data['secret_key']), ctx.thread)
     data_to_encrypt = data['data']
     ciphertext = ctx.encrypt(secret_key, data_to_encrypt)
     return jsonify(
@@ -36,7 +35,7 @@ def encrypt():
             "result":"success",
             "data":
                 {
-                    "encrypted_data": binascii.hexlify(ciphertext.dumps()).decode('ascii')
+                    "encrypted_data": base64.b64encode(ciphertext.dumps()).decode('ascii')
                 }
         }
     )
@@ -44,8 +43,8 @@ def encrypt():
 @app.route('/decrypt',methods=['POST'])
 def decrypt():
     data = request.json
-    encrypted_data = nufhe.LweSampleArray.loads(binascii.unhexlify(data['encrypted_data']), ctx.thread)
-    secret_key = nufhe.NuFHESecretKey.loads(binascii.unhexlify(data['secret_key']), ctx.thread)
+    encrypted_data = nufhe.LweSampleArray.loads(base64.b64decode(data['encrypted_data']), ctx.thread)
+    secret_key = nufhe.NuFHESecretKey.loads(base64.b64decode(data['secret_key']), ctx.thread)
 
     result_bits = ctx.decrypt(secret_key, encrypted_data)
 
