@@ -16,7 +16,7 @@ CORS(app)
 @cross_origin()
 def encrypt():
     data = request.json
-    encrypted_data = nufhe.LweSampleArray.loads(base64.b64decode(data['encrypted_data'], ctx.thread))
+    encrypted_data = nufhe.LweSampleArray.loads(base64.b64decode(data['encrypted_data']), ctx.thread)
     cloud_key = nufhe.NuFHECloudKey.loads(zlib.decompress(base64.b64decode(data['cloud_key']), ctx.thread))
 
     vm = ctx.make_virtual_machine(cloud_key)
