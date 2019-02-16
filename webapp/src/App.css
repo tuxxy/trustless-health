@@ -2,6 +2,14 @@
 @import "~@blueprintjs/core/lib/css/blueprint.css";
 @import "~@blueprintjs/icons/lib/css/blueprint-icons.css";
 
+.Core {
+  background-color: #ffffff;
+}
+
+.Core-dark {
+  background-color: #293742;
+}
+
 .App {
   text-align: center;
 }
