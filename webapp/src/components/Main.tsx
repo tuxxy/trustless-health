@@ -17,6 +17,7 @@ FocusStyleManager.onlyShowFocusOnTabs(); // Do not show blue box around all butt
 import {IMainState} from "../reducers/mainReducer";
 
 interface IProps extends IMainState {
+    initializeTrustlessHealthAction: () => void;
     toggleDarkModeAction: () => void;
 }
 
@@ -25,6 +26,10 @@ class Main extends React.Component<IProps> {
     public componentDidUpdate(): void {
         document.body.className = this.props.darkMode ? 'Core-dark bp3-dark' : 'Core';
     }
+
+    public handleClick = () => {
+        this.props.initializeTrustlessHealthAction();
+    };
 
     public render() {
         return (
@@ -51,10 +56,6 @@ class Main extends React.Component<IProps> {
                 </p>
             </div>
         );
-    }
-
-    private handleClick() {
-        alert('Hello world!');
     }
 }
 

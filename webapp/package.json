@@ -1,5 +1,5 @@
 {
-  "name": "webapp",
+  "name": "trustless-health",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -14,13 +14,16 @@
     "redux": "^4.0.1",
     "redux-devtools-extension": "^2.13.8",
     "redux-logger": "^3.0.6",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "scrypt": "^6.0.3",
+    "web3": "^1.0.0-beta.37"
   },
   "scripts": {
     "start": "react-scripts-ts start",
     "build": "react-scripts-ts build",
     "test": "react-scripts-ts test --env=jsdom",
-    "eject": "react-scripts-ts eject"
+    "eject": "react-scripts-ts eject",
+    "postinstall": "sed -i.bak 's/\\.\\/build\\/Release\\/scrypt\"/\\.\\/build\\/Release\\/scrypt\\.node\"/g' node_modules/scrypt/index.js && rm node_modules/scrypt/index.js.bak"
   },
   "devDependencies": {
     "@types/jest": "^24.0.5",
