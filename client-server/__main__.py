@@ -20,7 +20,7 @@ def generate_secret_key():
             "result":"success",
             "data": {
                 "secret_key": binascii.hexlify(secret_key.dumps()).decode('ascii'),
-                "public_key": binascii.hexlify(cloud_key.dumps()).decode('ascii')
+                "cloud_key": binascii.hexlify(cloud_key.dumps()).decode('ascii')
             }
         }
     )
