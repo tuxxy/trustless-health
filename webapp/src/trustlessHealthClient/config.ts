@@ -12,6 +12,16 @@ export interface ITxObj {
     v?: string;
 }
 
+export interface IAnalysisOffering {
+    host: string;
+    paymentAddress: string;
+    price: number;
+    categoryId: number;
+    title: string;
+    description: string;
+    isValid: boolean;
+}
+
 export type Callback = (error: Error, result: any) => void;
 
 export class Config {
