@@ -6,6 +6,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import base64
 import nufhe
+import zlib
 
 ctx = nufhe.Context()
 app = Flask(__name__)
@@ -14,12 +15,14 @@ CORS(app)
 @app.route("/generate_key_pair",methods=['POST'])
 def generate_secret_key():
     secret_key, cloud_key = ctx.make_key_pair()
+    cloud_key = cloud_key.dumps()
+    cloud_key_compressed = zlib.compress(cloud_key)
     return jsonify(
         {
             "result":"success",
             "data": {
                 "secret_key": base64.b64encode(secret_key.dumps()).decode('ascii'),
-                "cloud_key": base64.b64encode(cloud_key.dumps()).decode('ascii')
+                "cloud_key": base64.b64encode(cloud_key_compressed).decode('ascii')
             }
         }
     )
