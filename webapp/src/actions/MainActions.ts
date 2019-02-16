@@ -10,4 +10,5 @@ export const toggleDarkModeAction: ActionCreator<IToggleDarkModeAction> = () => 
     type: TOGGLE_DARK_MODE
 });
 
-export type MainActions = IToggleDarkModeAction;
+export type MainActions =
+    | IToggleDarkModeAction;

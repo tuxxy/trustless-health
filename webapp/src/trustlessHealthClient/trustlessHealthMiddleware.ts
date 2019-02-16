@@ -2,10 +2,14 @@
 
 import {Dispatch, Middleware, MiddlewareAPI} from 'redux';
 import {RootActions} from "../actions";
-import {INITIALIZE_TRUSTLESS_HEALTH} from "./trustlessHealthActions";
 import {TrustlessHealthClient} from "./trustlessHealthClient";
 
 const trustlessHealthClient = new TrustlessHealthClient();
+
+import {
+    INITIALIZE_TRUSTLESS_HEALTH,
+    TRANSFER_ETH_FROM_PRIVATE_KEY
+} from "./trustlessHealthActions";
 
 export const trustlessHealthMiddleware: Middleware = ({dispatch, getState}: MiddlewareAPI) => (
     next: Dispatch
@@ -13,8 +17,18 @@ export const trustlessHealthMiddleware: Middleware = ({dispatch, getState}: Midd
 
     switch (action.type) {
         case INITIALIZE_TRUSTLESS_HEALTH:
-            console.log(trustlessHealthClient.getCategories());
+
             trustlessHealthClient.getKeyPair();
+            break;
+
+        case TRANSFER_ETH_FROM_PRIVATE_KEY:
+            trustlessHealthClient.SendEthFromPrivateKey(action.quantity)
+                .then(() => {
+                    console.log('Transaction sent')
+                })
+                .catch((error) => {
+                    console.error(error)
+                });
             break;
         default:
             break;

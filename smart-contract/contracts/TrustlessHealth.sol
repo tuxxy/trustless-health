@@ -29,7 +29,7 @@ contract TrustlessHealth {
         owner = msg.sender;
     }
 
-    function submitAnalysisOffering(string memory host, address payable paymentAddress, uint256 price, uint categoryId, string memory title, string memory description) public {
+    function submitAnalysisOffering(string memory host, address payable paymentAddress, uint price, uint categoryId, string memory title, string memory description) public {
         require(categoryExists(categoryId));
         analysisOffering memory offering = analysisOffering(host, paymentAddress, price, categoryId, title, description, true);
         analysisOfferings[categoryId].push(offering);

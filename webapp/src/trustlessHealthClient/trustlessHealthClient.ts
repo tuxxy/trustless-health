@@ -1,5 +1,6 @@
+import axios, {AxiosResponse} from 'axios';
 import Web3 from 'web3';
-import axios from 'axios';
+import {Callback, Config, ITxObj} from "./config";
 
 const contractJson = require('../contracts/TrustlessHealth.json');
 
@@ -21,17 +22,159 @@ export class TrustlessHealthClient {
     private encryptedData: string;
     private decryptedData: number[];
 
-
     constructor() {
         this.initialize();
     }
 
     public initialize(): void {
-        this.web3 = new Web3("ws://localhost:7545");
+        this.web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
         this.contract = new this.web3.eth.Contract(this.contractABI, this.contractAddress);
+
+        this.GetCurrentAccount().then(account => {
+            console.log('Account', account);
+        });
     }
 
-    public getCategories(): Promise<string[]> {
+    public GetCurrentAccount(): Promise<string> {
+        return new Promise<string>(async (resolve, reject) => {
+            this.web3.eth.getAccounts().then(accounts => {
+                resolve(accounts[0])
+            }).catch(error => {
+                console.error('Could not get account!');
+            })
+        })
+    }
+
+    public SendEthFromPrivateKey(quantity: number): Promise<void> {
+        return new Promise<void>(async (resolve, reject) => {
+            const privateKey = '0xca15bedb59f1aadc2181bbbc85ea0fd7a0ce48769ea981884a63767dae35c26a';
+            const receivingAddress = await this.GetCurrentAccount();
+            console.log(receivingAddress);
+            if (receivingAddress === null || receivingAddress === undefined) {
+                reject(new Error('Account not set'));
+                return;
+            }
+            const {numberToHex} = this.web3.utils;
+            const txObject = {
+                gasLimit: numberToHex(Config.gasLimit),
+                gasPrice: numberToHex(Config.gasPrice),
+                to: receivingAddress,
+                value: quantity * 10 ** 18,
+            };
+
+            const {rawTransaction} = await this.web3.eth.accounts.signTransaction(txObject, privateKey);
+            // @ts-ignore
+            this.web3.eth.sendSignedTransaction(rawTransaction)
+                .on('receipt', (result: any) => {
+                    console.log(result);
+                    resolve();
+                }).on('error', (error: Error) => {
+                console.error(error)
+            });
+        })
+    }
+
+    // ------------------------------------- Methods for Smart Contract ----------------------------------------------
+
+    public CreateCategory(categoryName: string, callback: Callback): void {
+        try {
+            this.GetCurrentAccount().then(fromAddress => {
+                if (fromAddress === null || fromAddress === undefined) {
+                    callback(new Error('Account not set!'), undefined);
+                    return;
+                }
+                const {numberToHex} = this.web3.utils;
+                const encodedTx = this.contract.methods.createCategory(categoryName).encodeABI();
+
+                const txObj: ITxObj = {
+                    chainId: Config.chainId,
+                    data: encodedTx,
+                    from: fromAddress,
+                    gasLimit: numberToHex(Config.gasLimit),
+                    gasPrice: numberToHex(Config.gasPrice),
+                    to: this.contractAddress
+                };
+                this.web3.eth.sendTransaction(txObj, callback);
+            })
+        } catch (error) {
+            callback(error, undefined);
+            return;
+        }
+    }
+
+    public SubmitAnalysisOffering(
+        host: string,
+        paymentAddress: string,
+        price: number,
+        categoryId: number,
+        title: string,
+        description: string,
+        callback: Callback): void {
+        try {
+            this.GetCurrentAccount().then(fromAddress => {
+                if (fromAddress === null || fromAddress === undefined) {
+                    callback(new Error('Account not set!'), undefined);
+                    return;
+                }
+                const {numberToHex} = this.web3.utils;
+                const encodedTx = this.contract.methods.submitAnalysisOffering(
+                    host, paymentAddress, price, categoryId, title, description).encodeABI();
+
+                const txObj: ITxObj = {
+                    chainId: Config.chainId,
+                    data: encodedTx,
+                    from: fromAddress,
+                    gasLimit: numberToHex(Config.gasLimit),
+                    gasPrice: numberToHex(Config.gasPrice),
+                    to: this.contractAddress
+                };
+                this.web3.eth.sendTransaction(txObj, callback);
+            })
+
+        } catch (error) {
+            callback(error, undefined)
+        }
+    }
+
+    public SubmitPurchaseOffering(
+        offeringId: number,
+        categoryId: number,
+        callback: Callback): void {
+        try {
+            this.GetCurrentAccount().then(fromAddress => {
+                if (fromAddress === null || fromAddress === undefined) {
+                    callback(new Error('Account not set!'), undefined);
+                    return;
+                }
+                const {numberToHex} = this.web3.utils;
+                const encodedTx = this.contract.methods.purchaseOffering(offeringId, categoryId).encodeABI();
+
+                const txObj: ITxObj = {
+                    chainId: Config.chainId,
+                    data: encodedTx,
+                    from: fromAddress,
+                    gasLimit: numberToHex(Config.gasLimit),
+                    gasPrice: numberToHex(Config.gasPrice),
+                    to: this.contractAddress
+                };
+                this.web3.eth.sendTransaction(txObj, callback);
+            })
+        } catch (error) {
+            callback(error, undefined)
+        }
+    }
+
+    public CategoryExists(categoryId: number): Promise<boolean> {
+        return new Promise<boolean>(async (resolve, reject) => {
+            try {
+                resolve(await this.contract.methods.categoryExists(categoryId).call());
+            } catch (e) {
+                reject(e)
+            }
+        })
+    }
+
+    public GetCategories(): Promise<string[]> {
         return new Promise<string[]>(async (resolve, reject) => {
             try {
                 const categories = await this.contract.methods.getCategories().call();
@@ -42,7 +185,7 @@ export class TrustlessHealthClient {
         });
     }
 
-    public getOfferings(categoryId: number): Promise<string[]> {
+    public GetOfferings(categoryId: number): Promise<string[]> {
         return new Promise<string[]>(async (resolve, reject) => {
             try {
                 const offerings = await this.contract.methods.getOfferings(categoryId).call();
@@ -53,15 +196,25 @@ export class TrustlessHealthClient {
         });
     }
 
+    public RegisterPurchasedOfferingListener(callback: (error: Error, result: any) => void): void {
+        try {
+            this.contract.events.purchasedOffering({
+                filter: {}
+            }, callback);
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
+    // ------------------------------------------ Methods for FHE ---------------------------------------------------
+
     public getKeyPair = () => {
         console.log('Getting key pair...');
-        this.clientServer.post('generate_key_pair').then(result => {
+        this.clientServer.post('generate_key_pair').then((result: AxiosResponse) => {
             return result.data;
-        }).then((data: { data: {}}) => {
-            return data.data;
-        }).then((data: {cloud_key: string, secret_key: string}) => {
-            this.secretKey = data.secret_key;
-            this.cloudKey = data.cloud_key;
+        }).then((result: { data: { cloud_key: string, secret_key: string } }) => {
+            this.secretKey = result.data.secret_key;
+            this.cloudKey = result.data.cloud_key;
             console.log('Secret and cloud keys set');
             this.encrypt([0, 1, 0, 1, 1, 1, 1, 0]);
         });
@@ -71,10 +224,12 @@ export class TrustlessHealthClient {
         console.log('Encrypting...');
         this.data = data;
         this.clientServer.post('encrypt', {
-            secret_key: this.secretKey,
             data: this.data,
-        }).then(result => result.data).then((data: {data: { encrypted_data: string }}) => {
-            this.encryptedData = data.data.encrypted_data;
+            secret_key: this.secretKey,
+        }).then((result: AxiosResponse) => {
+            return result.data;
+        }).then((result: { data: { encrypted_data: string } }) => {
+            this.encryptedData = result.data.encrypted_data;
             console.log('Encrypted data set');
             this.compute();
         });
@@ -82,10 +237,11 @@ export class TrustlessHealthClient {
 
     public decrypt(data: string) {
         console.log('Decrypting...');
-        this.clientServer.post('decrypt', { encrypted_data: data, secret_key: this.secretKey }).then(result => {
-            return result.data;
-        }).then((data: {data: { result: number[] }}) => {
-            this.decryptedData = data.data.result;
+        this.clientServer.post('decrypt', {encrypted_data: data, secret_key: this.secretKey})
+            .then((result: AxiosResponse) => {
+                return result.data;
+            }).then((result: { data: { result: number[] } }) => {
+            this.decryptedData = result.data.result;
             console.log('Decrypted data set');
             this.validate();
         });
@@ -93,9 +249,12 @@ export class TrustlessHealthClient {
 
     public compute() {
         console.log('Computing...');
-        this.providerServer.post('compute', { cloud_key: this.cloudKey, encrypted_data: this.encryptedData }).then(res => {
-            return res.data;
-        }).then((data: { data: { encrypted_result: string }}) => {
+        this.providerServer.post('compute', {
+            cloud_key: this.cloudKey,
+            encrypted_data: this.encryptedData
+        }).then((result: AxiosResponse) => {
+            return result.data;
+        }).then((data: { data: { encrypted_result: string } }) => {
             console.log('Computed');
             this.decrypt(data.data.encrypted_result);
         });
