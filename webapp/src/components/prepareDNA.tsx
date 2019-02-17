@@ -5,7 +5,7 @@ interface IProps {
     categoryId: number;
     offeringId: number;
     offeringPrice: number;
-    submitPurchaseOfferingAction: (offeringId: number, offeringPrice: number, categoryId: number) => void
+    submitPurchaseOfferingAction: (offeringId: number, offeringPrice: number, categoryId: number, dataToEncrypt: string) => void
 }
 
 interface IState {
@@ -43,21 +43,10 @@ export class PrepareDNA extends React.Component<IPanelProps & IProps, IState> {
         })
     };
 
-    public handleContinue = async() => {
+    public handleContinue = () => {
         const { categoryId, offeringId, offeringPrice } = this.props;
         this.handleCloseDialog();
-        this.props.submitPurchaseOfferingAction(offeringId, offeringPrice, categoryId);
-        /*
-        const trustlessHealthClient = new TrustlessHealthClient();
-        const keypair = await trustlessHealthClient.getKeyPair();
-        const dna = this.state.DNA;
-        const encodedDna = TrustlessHealthClient.encode(dna);
-        console.log(encodedDna);
-        const encryptedDna = await trustlessHealthClient.encrypt(encodedDna, keypair.secretKey);
-        const computedDna = await trustlessHealthClient.compute(encryptedDna, keypair.cloudKey);
-        const decodedComputedDna = await trustlessHealthClient.decrypt(computedDna, keypair.secretKey);
-        console.log(decodedComputedDna);
-        */
+        this.props.submitPurchaseOfferingAction(offeringId, offeringPrice, categoryId, this.state.DNA);
     };
 
     public render() {

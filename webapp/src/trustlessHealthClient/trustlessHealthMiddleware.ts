@@ -11,9 +11,9 @@ import {
     GET_OFFERINGS,
     getCategoriesAction,
     getOfferingsAction,
-    INITIALIZE_TRUSTLESS_HEALTH,
-    receiveCategoriesAction,
-    receiveOfferingsAction,
+    INITIALIZE_TRUSTLESS_HEALTH, RECEIVE_DECRYPTED_COMPUTED_DATA,
+    receiveCategoriesAction, receiveDecryptedComputedDataAction,
+    receiveOfferingsAction, START_ENCRYPTION_AND_TRANSFER, startEncryptionAndTransferAction,
     SUBMIT_ANALYSIS_OFFERING,
     SUBMIT_PURCHASE_OFFERING,
 } from "./trustlessHealthActions";
@@ -90,7 +90,7 @@ export const trustlessHealthMiddleware: Middleware = ({dispatch, getState}: Midd
         case SUBMIT_PURCHASE_OFFERING:
             const submitPurchaseOfferingCallback = (error: Error, result: any) => {
                 if (!error) {
-                    console.log('Purchase offering completed');
+                    dispatch(startEncryptionAndTransferAction())
                     console.log(result);
                 } else {
                     console.error('Creating analysis offering failed.');
@@ -100,6 +100,24 @@ export const trustlessHealthMiddleware: Middleware = ({dispatch, getState}: Midd
             trustlessHealthClient.SubmitPurchaseOffering(
                 action.offeringId, action.offeringPrice, action.categoryId, submitPurchaseOfferingCallback);
             break;
+
+        case START_ENCRYPTION_AND_TRANSFER:
+
+            // End with this
+            dispatch(receiveDecryptedComputedDataAction(decodedComputedData));
+            break;
+
+            /*
+            const trustlessHealthClient = new TrustlessHealthClient();
+            const keypair = await trustlessHealthClient.getKeyPair();
+            const dna = this.state.DNA;
+            const encodedDna = TrustlessHealthClient.encode(dna);
+            console.log(encodedDna);
+            const encryptedDna = await trustlessHealthClient.encrypt(encodedDna, keypair.secretKey);
+            const computedDna = await trustlessHealthClient.compute(encryptedDna, keypair.cloudKey);
+            const decodedComputedDna = await trustlessHealthClient.decrypt(computedDna, keypair.secretKey);
+            console.log(decodedComputedDna);
+            */
 
         default:
             break;
