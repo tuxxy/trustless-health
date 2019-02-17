@@ -30,7 +30,7 @@ export const trustlessHealthMiddleware: Middleware = ({dispatch, getState}: Midd
 
             const purchasedOfferingCallback = (error: Error, result: IPurchasedOffer) => {
                 if (!error) {
-                    dispatch(startEncryptionAndTransferAction(main.dataToEncrypt, result.returnValues.offering.host));
+                    dispatch(startEncryptionAndTransferAction(result.returnValues.offering.host));
                 } else {
                     console.error('Purchase of offer failed!');
                 }
@@ -110,7 +110,7 @@ export const trustlessHealthMiddleware: Middleware = ({dispatch, getState}: Midd
                 const decryptedData = await trustlessHealthClient.decrypt(computedData, keyPair.secretKey);
                 resolve(decryptedData);
             }).then(decryptedComputedData => {
-                console.log(decryptedComputedData)
+                console.log(decryptedComputedData);
                  dispatch(receiveDecryptedComputedDataAction(decryptedComputedData));
              });
             break;
