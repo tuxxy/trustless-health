@@ -56,7 +56,7 @@ export class PrepareDNA extends React.Component<IPanelProps & IProps, IState> {
                 <Card>
                     <label className="bp3-label">
                         Insert your DNA
-                        <TextArea fill={true} onChange={this.onChange} value={DNA} />
+                        <TextArea fill={true} className={'bp3-large'} onChange={this.onChange} value={DNA} />
                     </label>
                     {DNA && (
                         <Button intent={Intent.SUCCESS} onClick={this.handleOpenDialog}>Click here to purchase analysis</Button>

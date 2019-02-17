@@ -1,4 +1,4 @@
-import {Button, Callout, Classes, Dialog, Intent, Spinner, Tooltip} from "@blueprintjs/core";
+import {Button, Callout, Classes, Dialog, Intent, Spinner, Text, Tooltip} from "@blueprintjs/core";
 import * as React from "react";
 
 interface IProps {
@@ -28,44 +28,38 @@ export class ComputeProgress extends React.Component<IProps> {
                 <div className={Classes.DIALOG_BODY}>
 
                     <Callout icon="info-sign" intent="none" title="Data to analyse">
-                        <div className="flex-grid">
-                            <div className="col">
-                                {dataToEncrypt.slice(0, 20)}...
-                            </div>
-                            <div className="col callout-spinner">
-                                {encryptedData === '' && <Spinner/>}
-                            </div>
+                        <Text className={'callout-text'} ellipsize={true}>
+                            {dataToEncrypt}
+                        </Text>
+                        <div className="callout-spinner">
+                            {encryptedData === '' && <Spinner/>}
                         </div>
                     </Callout>
                     <br/>
-                    {encryptedData !== '' && <>
+                    {encryptedData !== '' &&
                     <Callout icon="info-sign" intent="none" title="Encrypted data">
-                        <div className="flex-grid">
-                            <div className="col">
-                                {encryptedData.slice(0, 20)}...
-                            </div>
-                            <div className="col callout-spinner">
-                                {encryptedComputedData === '' && <Spinner/>}
-                            </div>
+                        <Text className={'callout-text'} ellipsize={true}>
+                            {encryptedData}
+                        </Text>
+                        <div className="callout-spinner">
+                            {encryptedComputedData === '' && <Spinner/>}
                         </div>
                     </Callout>
-                    </>}
+                    }
                     <br/>
-                    {encryptedComputedData !== '' && <>
+                    {encryptedComputedData !== '' &&
                         <Callout icon="info-sign" intent="none" title="Computed encrypted data">
-                            <div className="flex-grid">
-                                <div className="col">
-                                    {encryptedComputedData.slice(0, 20)}...
-                                </div>
-                                <div className="col callout-spinner">
-                                    {decryptedComputedData === '' && <Spinner/>}
-                                </div>
+                            <Text className={'callout-text'} ellipsize={true}>
+                                {encryptedComputedData}
+                            </Text>
+                            <div className="callout-spinner">
+                                {decryptedComputedData === '' && <Spinner/>}
                             </div>
                         </Callout>
-                    </>}
+                    }
                     <br/>
                     {decryptedComputedData !== '' && <>
-                        <Callout icon="info-sign" intent="success" title="Decrypted result">
+                        <Callout intent="success" title="Decrypted result">
                             {decryptedComputedData}
                         </Callout>
                     </>}
