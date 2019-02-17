@@ -4,6 +4,7 @@ import NewCategoryContainer from "../containers/newCategoryContainer";
 
 interface IProps {
     categories: string[];
+    getCategoriesAction: () => void;
     submitAnalysisOfferingAction: (
         host: string,
         paymentAddress: string,
@@ -32,6 +33,10 @@ export class ProviderTab extends React.Component<IProps, IState> {
         price: 1,
         title: '',
     };
+
+    public componentDidMount(): void {
+        this.props.getCategoriesAction();
+    }
 
     public render() {
         const {categoryIdSelected, title, description, host, paymentAddress, price} = this.state;

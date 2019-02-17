@@ -3,7 +3,7 @@ import { bindActionCreators, Dispatch } from 'redux';
 import { RootActions } from '../actions';
 import {ShowCategories} from "../components/showCategories";
 import {IRootState} from "../reducers";
-import { getCategoriesAction } from "../trustlessHealthClient/trustlessHealthActions";
+import {getCategoriesAction} from "../trustlessHealthClient/trustlessHealthActions";
 
 const mapStateToProps = (state: IRootState) => ({
     categories: state.showCategories.categories,
@@ -12,7 +12,7 @@ const mapStateToProps = (state: IRootState) => ({
 const mapDispatchToProps = (dispatch: Dispatch<RootActions>) =>
     bindActionCreators(
         {
-            getCategoriesAction
+            getCategoriesAction,
         },
         dispatch
     );
