@@ -16,7 +16,7 @@ CORS(app)
 
 @app.route('/compute', methods=['POST'])
 @cross_origin()
-def encrypt():
+def compute():
     data = request.json
     encrypted_data = nufhe.LweSampleArray.loads(
         base64.b64decode(data['encrypted_data']), ctx.thread)
