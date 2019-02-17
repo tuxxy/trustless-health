@@ -60,9 +60,9 @@ export class ComputeProgress extends React.Component<IProps> {
                     <br/>
                     {decryptedComputedData !== '' && <>
                         <Callout intent="success" title="Result">
-                            {decryptedComputedData} = {parseInt( decryptedComputedData, 2 )}
+                            {decryptedComputedData} = {parseInt( decryptedComputedData.join(""), 2 )}
                             <br /><br />
-                            <b>Risk score: {parseInt( decryptedComputedData, 2 )} / 7 </b>
+                            <b>Risk score: {parseInt( decryptedComputedData.join(""), 2 )} / 7 </b>
                         </Callout>
                     </>}
                 </div>
