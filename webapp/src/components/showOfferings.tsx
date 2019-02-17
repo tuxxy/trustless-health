@@ -1,5 +1,6 @@
 import {Card, Elevation, IPanelProps} from "@blueprintjs/core";
 import * as React from "react";
+import PrepareDNAContainer from "../containers/prepareDNAContainer";
 import {IShowCategoriesState} from "../reducers/showCategoriesReducer";
 import {IAnalysisOffering} from "../trustlessHealthClient/config";
 
@@ -15,6 +16,18 @@ export class ShowOfferings extends React.Component<IPanelProps & IProps> {
         this.props.getOfferingsAction(this.props.categoryId);
     }
 
+    public onClick = (index: number) => {
+        const offering = this.props.offerings[index];
+        this.props.openPanel({
+            component: PrepareDNAContainer,
+            props: {
+                categoryId: this.props.categoryId,
+                offeringId: index,
+            },
+            title: offering.title,
+        });
+    };
+
     public render() {
         const { offerings } = this.props;
         return (
@@ -25,11 +38,19 @@ export class ShowOfferings extends React.Component<IPanelProps & IProps> {
                             interactive={true}
                             elevation={Elevation.ONE}
                             key={idx}
-                            className={'category'}
+                            className={'panel-card-wide'}
+                            onClick={this.onClick.bind(this, idx)}
                         >
-                            {offering}
+                            <h3 className={'offering-title'}>{offering.title} <span>Price: {offering.price / 10**18} ETH</span></h3>
+                            <p>{offering.description}</p>
+                            <p>Payment address: {offering.paymentAddress}</p>
                         </Card>)
                 })}
+                {offerings.length === 0 && (
+                    <Card>
+                        There are currently no offerings in this category.
+                    </Card>
+                )}
             </div>
         )
     }

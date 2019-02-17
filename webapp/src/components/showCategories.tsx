@@ -20,7 +20,7 @@ export class ShowCategories extends React.Component<IPanelProps & IProps> {
             props: {
                 categoryId: index,
             },
-            title: `Choose offering from category ${category}`,
+            title: `Offerings in ${category}`,
         });
     };
 
@@ -34,7 +34,7 @@ export class ShowCategories extends React.Component<IPanelProps & IProps> {
                             interactive={true}
                             elevation={Elevation.ONE}
                             key={idx}
-                            className={'category'}
+                            className={'panel-card'}
                             onClick={this.onClick.bind(this, idx)}
                         >
                             {category}

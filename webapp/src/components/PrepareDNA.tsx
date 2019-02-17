@@ -1,13 +1,18 @@
-import {Button, Card, Classes, Dialog, Intent, TextArea} from "@blueprintjs/core";
+import {Button, Card, Classes, Dialog, Intent, IPanelProps, TextArea} from "@blueprintjs/core";
 import * as React from "react";
-import {TrustlessHealthClient} from "../trustlessHealthClient/trustlessHealthClient";
+
+interface IProps {
+    categoryId: number;
+    offeringId: number;
+    submitPurchaseOfferingAction: (offeringId: number, categoryId: number) => void
+}
 
 interface IState {
     DNA: string;
     showDialog: boolean;
 }
 
-export class PrepareDNA extends React.Component<{}, IState> {
+export class PrepareDNA extends React.Component<IPanelProps & IProps, IState> {
 
     public state = {
         DNA: '',
@@ -25,20 +30,23 @@ export class PrepareDNA extends React.Component<{}, IState> {
         });
     };
 
-    public onClick = () => {
+    public handleOpenDialog = () => {
         this.setState({
             showDialog: true,
         })
     };
 
-    public handleClose = () => {
+    public handleCloseDialog = () => {
         this.setState({
             showDialog: false,
         })
     };
 
     public handleContinue = async() => {
-        this.handleClose();
+        const { categoryId, offeringId } = this.props;
+        this.handleCloseDialog();
+        this.props.submitPurchaseOfferingAction(offeringId, categoryId);
+        /*
         const trustlessHealthClient = new TrustlessHealthClient();
         const keypair = await trustlessHealthClient.getKeyPair();
         const dna = this.state.DNA;
@@ -48,6 +56,7 @@ export class PrepareDNA extends React.Component<{}, IState> {
         const computedDna = await trustlessHealthClient.compute(encryptedDna, keypair.cloudKey);
         const decodedComputedDna = await trustlessHealthClient.decrypt(computedDna, keypair.secretKey);
         console.log(decodedComputedDna);
+        */
     };
 
     public render() {
@@ -60,10 +69,10 @@ export class PrepareDNA extends React.Component<{}, IState> {
                         <TextArea fill={true} onChange={this.onChange} value={DNA} />
                     </label>
                     {DNA && (
-                        <Button intent={Intent.SUCCESS} onClick={this.onClick}>Click here to purchase analysis</Button>
+                        <Button intent={Intent.SUCCESS} onClick={this.handleOpenDialog}>Click here to purchase analysis</Button>
                     )}
                 </Card>
-                <Dialog isOpen={showDialog} onClose={this.handleClose} title={'Are you sure?'}>
+                <Dialog isOpen={showDialog} onClose={this.handleCloseDialog} title={'Are you sure?'}>
                     <div className={Classes.DIALOG_BODY}>
                         <p>
                             Clicking continue will generate a key pair and encrypt your DNA so the provider will not be
@@ -73,7 +82,7 @@ export class PrepareDNA extends React.Component<{}, IState> {
                     </div>
                     <div className={Classes.DIALOG_FOOTER}>
                         <div className={Classes.DIALOG_FOOTER_ACTIONS}>
-                            <Button onClick={this.handleClose}>Back</Button>
+                            <Button onClick={this.handleCloseDialog}>Back</Button>
                             <Button intent={Intent.PRIMARY} onClick={this.handleContinue}>
                                 Continue
                             </Button>

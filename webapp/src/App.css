@@ -57,10 +57,22 @@
   justify-content: space-around;
 }
 
-.panel-wrapper .category {
+.panel-wrapper .panel-card {
   flex: 0 0 30%;
   margin: 10px 0;
   text-align: center;
+}
+
+.panel-wrapper .panel-card-wide {
+  flex: 0 0 90%;
+  margin: 10px 0;
+}
+
+.offering-title > span {
+  font-weight: normal;
+  font-size: 0.85rem;
+  color: #5C7080;
+  float: right;
 }
 
 .bp3-panel-stack {

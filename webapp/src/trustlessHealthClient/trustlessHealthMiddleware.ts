@@ -90,8 +90,10 @@ export const trustlessHealthMiddleware: Middleware = ({dispatch, getState}: Midd
             const submitPurchaseOfferingCallback = (error: Error, result: any) => {
                 if (!error) {
                     console.log('Purchase offering completed');
+                    console.log(result);
                 } else {
                     console.error('Creating analysis offering failed.');
+                    console.error(error);
                 }
             };
             trustlessHealthClient.SubmitPurchaseOffering(
