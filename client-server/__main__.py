@@ -12,7 +12,8 @@ ctx = nufhe.Context()
 app = Flask(__name__)
 CORS(app)
 
-@app.route("/generate_key_pair",methods=['POST'])
+
+@app.route("/generate_key_pair", methods=['POST'])
 @cross_origin()
 def generate_secret_key():
     secret_key, cloud_key = ctx.make_key_pair()
@@ -20,7 +21,7 @@ def generate_secret_key():
     cloud_key_compressed = zlib.compress(cloud_key)
     return jsonify(
         {
-            "result":"success",
+            "result": "success",
             "data": {
                 "secret_key": base64.b64encode(secret_key.dumps()).decode('ascii'),
                 "cloud_key": base64.b64encode(cloud_key_compressed).decode('ascii')
@@ -28,16 +29,18 @@ def generate_secret_key():
         }
     )
 
-@app.route('/encrypt',methods=['POST'])
+
+@app.route('/encrypt', methods=['POST'])
 @cross_origin()
 def encrypt():
     data = request.json
-    secret_key = nufhe.NuFHESecretKey.loads(base64.b64decode(data['secret_key']), ctx.thread)
+    secret_key = nufhe.NuFHESecretKey.loads(
+        base64.b64decode(data['secret_key']), ctx.thread)
     data_to_encrypt = data['data']
     ciphertext = ctx.encrypt(secret_key, data_to_encrypt)
     return jsonify(
         {
-            "result":"success",
+            "result": "success",
             "data":
                 {
                     "encrypted_data": base64.b64encode(ciphertext.dumps()).decode('ascii')
@@ -45,24 +48,28 @@ def encrypt():
         }
     )
 
-@app.route('/decrypt',methods=['POST'])
+
+@app.route('/decrypt', methods=['POST'])
 @cross_origin()
 def decrypt():
     data = request.json
-    encrypted_data = nufhe.LweSampleArray.loads(base64.b64decode(data['encrypted_data']), ctx.thread)
-    secret_key = nufhe.NuFHESecretKey.loads(base64.b64decode(data['secret_key']), ctx.thread)
+    encrypted_data = nufhe.LweSampleArray.loads(
+        base64.b64decode(data['encrypted_data']), ctx.thread)
+    secret_key = nufhe.NuFHESecretKey.loads(
+        base64.b64decode(data['secret_key']), ctx.thread)
 
     result_bits = ctx.decrypt(secret_key, encrypted_data)
 
     return jsonify(
         {
-            "result":"success",
+            "result": "success",
             "data":
                 {
                     "result": list([int(a) for a in result_bits.tolist()])
                 }
         }
     )
+
 
 if __name__ == "__main__":
     app.run(debug=True)
