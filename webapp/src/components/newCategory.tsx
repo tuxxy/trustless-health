@@ -45,7 +45,7 @@ export class NewCategory extends React.Component<IProps, IState> {
                 </label>
                 {category && (
                     <Button
-                        intent={Intent.SUCCESS}
+                        intent={Intent.PRIMARY}
                         onClick={this.onClick}
                         disabled={categories.filter(name => name === category).length > 0}
                     >Create new category</Button>

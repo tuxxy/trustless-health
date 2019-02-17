@@ -55,11 +55,11 @@ export class PrepareDNA extends React.Component<IPanelProps & IProps, IState> {
             <>
                 <Card>
                     <label className="bp3-label">
-                        Insert your DNA
+                        Insert your DNA. A minimum of 20 bases is required.
                         <TextArea fill={true} className={'bp3-large'} onChange={this.onChange} value={DNA} />
                     </label>
                     {DNA.length >= 20 && (
-                        <Button intent={Intent.SUCCESS} onClick={this.handleOpenDialog}>Click here to purchase analysis</Button>
+                        <Button intent={Intent.PRIMARY} onClick={this.handleOpenDialog}>Click here to purchase analysis</Button>
                     )}
                 </Card>
                 <Dialog isOpen={showDialog} onClose={this.handleCloseDialog} title={'Please confirm'}>
