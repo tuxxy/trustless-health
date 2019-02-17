@@ -8,7 +8,7 @@ export class TrustlessHealthClient {
     public static encode(data: string) {
         const result = [];
         for (const i of data) {
-            switch(i) {
+            switch (i) {
                 case 'A':
                     result.push(0, 0, 0, 1);
                     break;
@@ -178,9 +178,13 @@ export class TrustlessHealthClient {
 
     public RegisterPurchasedOfferingListener(callback: (error: Error, result: IPurchasedOffer) => void): void {
         try {
-            this.contract.events.purchasedOffering({
-                filter: {}
-            }, callback);
+            this.GetCurrentAccount().then(fromAddress => {
+                if (fromAddress !== null || fromAddress !== undefined) {
+                    this.contract.events.purchasedOffering({
+                        filter: {sender: fromAddress}
+                    }, callback);
+                }
+            })
         } catch (e) {
             console.error(e);
         }
@@ -192,7 +196,7 @@ export class TrustlessHealthClient {
         console.log('Getting key pair...');
         return this.clientServer.post('generate_key_pair').then((result: AxiosResponse) => {
             return result.data;
-        }).then((result: { data: { cloud_key: string, secret_key: string }}) => {
+        }).then((result: { data: { cloud_key: string, secret_key: string } }) => {
             return {
                 cloudKey: result.data.cloud_key,
                 secretKey: result.data.secret_key
@@ -218,8 +222,8 @@ export class TrustlessHealthClient {
             .then((result: AxiosResponse) => {
                 return result.data;
             }).then((result: { data: { result: number[] } }) => {
-            return result.data.result;
-        });
+                return result.data.result;
+            });
     }
 
     public compute(host: string, data: string, cloudKey: string) {

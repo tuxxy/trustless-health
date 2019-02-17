@@ -26,7 +26,8 @@ export interface IPurchasedOffer {
     returnValues: {
         offering: {
             host: string
-        }
+        },
+        sender: string;
     }
 }
 
