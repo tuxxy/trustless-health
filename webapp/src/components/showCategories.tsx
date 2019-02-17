@@ -9,10 +9,6 @@ interface IProps extends IShowCategoriesState {
 
 export class ShowCategories extends React.Component<IPanelProps & IProps> {
 
-    public state = {
-        categories: ['Cat 1', 'Cat 2', 'Cat 3', 'Cat 4', 'Cat 5']
-    };
-
     public componentDidMount(): void {
         this.props.getCategoriesAction();
     }
@@ -27,7 +23,7 @@ export class ShowCategories extends React.Component<IPanelProps & IProps> {
     public render() {
         const { categories } = this.props;
         return (
-            <Card elevation={Elevation.TWO} className={'category-wrapper'} title={'Provider Categories'}>
+            <div className={'category-wrapper'}>
                 {categories.map((category: string, idx: number) => {
                     return (
                         <Card
@@ -40,7 +36,7 @@ export class ShowCategories extends React.Component<IPanelProps & IProps> {
                             {category}
                         </Card>)
                 })}
-            </Card>
+            </div>
         )
     }
 

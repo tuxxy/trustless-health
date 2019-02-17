@@ -1,6 +1,6 @@
 import {
     Alignment,
-    Button,
+    Button, Card,
     Classes,
     FocusStyleManager,
     Navbar,
@@ -70,7 +70,9 @@ class Main extends React.Component<IProps> {
                         <NewCategoryContainer/>
                     </div>
                     <div className={'widget-wrapper'}>
-                        <PanelStack initialPanel={{ component: ShowCategoriesContainer, title: "Choose category" }} />
+                        <Card>
+                            <PanelStack initialPanel={{ component: ShowCategoriesContainer, title: "Choose category" }} />
+                        </Card>
                     </div>
                 </div>
             </div>

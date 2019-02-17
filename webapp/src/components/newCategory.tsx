@@ -1,4 +1,4 @@
-import { Button, Card, Elevation, InputGroup, Intent } from "@blueprintjs/core";
+import { Button, Card, InputGroup, Intent } from "@blueprintjs/core";
 import * as React from "react";
 
 interface IProps {
@@ -33,7 +33,7 @@ export class NewCategory extends React.Component<IProps, IState> {
         const { category } = this.state;
         return (
             <>
-                <Card elevation={Elevation.TWO}>
+                <Card>
                     <label className="bp3-label">
                         Category name
                         <InputGroup onChange={this.onChange} value={category}/>

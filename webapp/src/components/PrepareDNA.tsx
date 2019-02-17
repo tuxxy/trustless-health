@@ -1,4 +1,4 @@
-import {Button, Card, Classes, Dialog, Elevation, Intent, TextArea} from "@blueprintjs/core";
+import {Button, Card, Classes, Dialog, Intent, TextArea} from "@blueprintjs/core";
 import * as React from "react";
 import {TrustlessHealthClient} from "../trustlessHealthClient/trustlessHealthClient";
 
@@ -54,7 +54,7 @@ export class PrepareDNA extends React.Component<{}, IState> {
         const { DNA, showDialog } = this.state;
         return (
             <>
-                <Card elevation={Elevation.TWO}>
+                <Card>
                     <label className="bp3-label">
                         Insert your DNA
                         <TextArea fill={true} onChange={this.onChange} value={DNA} />

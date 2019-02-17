@@ -60,8 +60,9 @@
 .category-wrapper .category {
   flex: 0 0 30%;
   margin: 10px 0;
+  text-align: center;
 }
 
-.bp3-panel-stack-view {
-  position: absolute;
+.bp3-panel-stack {
+  min-height: 300px;
 }
