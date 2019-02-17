@@ -27,7 +27,7 @@ export class ComputeProgress extends React.Component<IProps> {
             >
                 <div className={Classes.DIALOG_BODY}>
 
-                    <Callout icon="info-sign" intent="none" title="Data to analyse">
+                    <Callout icon="info-sign" intent="none" title="Encrypting">
                         <Text className={'callout-text'} ellipsize={true}>
                             {dataToEncrypt}
                         </Text>
@@ -37,7 +37,7 @@ export class ComputeProgress extends React.Component<IProps> {
                     </Callout>
                     <br/>
                     {encryptedData !== '' &&
-                    <Callout icon="info-sign" intent="none" title="Encrypted data">
+                    <Callout icon="info-sign" intent="none" title="Computing">
                         <Text className={'callout-text'} ellipsize={true}>
                             {encryptedData}
                         </Text>
@@ -48,7 +48,7 @@ export class ComputeProgress extends React.Component<IProps> {
                     }
                     <br/>
                     {encryptedComputedData !== '' &&
-                        <Callout icon="info-sign" intent="none" title="Computed encrypted data">
+                        <Callout icon="info-sign" intent="none" title="Decrypting">
                             <Text className={'callout-text'} ellipsize={true}>
                                 {encryptedComputedData}
                             </Text>
@@ -59,7 +59,7 @@ export class ComputeProgress extends React.Component<IProps> {
                     }
                     <br/>
                     {decryptedComputedData !== '' && <>
-                        <Callout intent="success" title="Decrypted result">
+                        <Callout intent="success" title="Result">
                             {decryptedComputedData}
                         </Callout>
                     </>}

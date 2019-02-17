@@ -32,8 +32,7 @@ class Main extends React.Component<IProps, IState> {
     public state: IState = {
         navbarTabId: "home",
     };
-
-
+    
     public componentDidMount(): void {
         this.props.initializeTrustlessHealthAction();
     }

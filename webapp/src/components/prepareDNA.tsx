@@ -58,11 +58,11 @@ export class PrepareDNA extends React.Component<IPanelProps & IProps, IState> {
                         Insert your DNA
                         <TextArea fill={true} className={'bp3-large'} onChange={this.onChange} value={DNA} />
                     </label>
-                    {DNA && (
+                    {DNA.length >= 20 && (
                         <Button intent={Intent.SUCCESS} onClick={this.handleOpenDialog}>Click here to purchase analysis</Button>
                     )}
                 </Card>
-                <Dialog isOpen={showDialog} onClose={this.handleCloseDialog} title={'Are you sure?'}>
+                <Dialog isOpen={showDialog} onClose={this.handleCloseDialog} title={'Please confirm'}>
                     <div className={Classes.DIALOG_BODY}>
                         <p>
                             Clicking continue will generate a key pair and encrypt your DNA so the provider will not be
