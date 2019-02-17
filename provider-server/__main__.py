@@ -12,172 +12,8 @@ import numpy
 ctx = nufhe.Context()
 app = Flask(__name__)
 CORS(app)
-
-compute_wasm = '''\
-  (func $trustless_health::compute::h7a4c47c05a1a5870 (type 2) (param i32 i32) (result i32)
-    (local i32 i32 i32 i32 i32 i32 i32 i32 i32 i32 i32 i32)
-    global.get 0
-    i32.const 32
-    i32.sub
-    local.tee 2
-    global.set 0
-    local.get 2
-    i32.const 24
-    i32.add
-    i32.const 0
-    i32.store
-    local.get 2
-    i32.const 16
-    i32.add
-    i64.const 0
-    i64.store
-    local.get 2
-    i32.const 8
-    i32.add
-    i64.const 0
-    i64.store
-    local.get 2
-    i64.const 0
-    i64.store
-    local.get 2
-    local.get 0
-    local.get 1
-    i32.const 1
-    call $trustless_health::load_bit::h766865fc9d9aab0a
-    local.tee 3
-    local.get 0
-    local.get 1
-    i32.const 4
-    call $trustless_health::load_bit::h766865fc9d9aab0a
-    local.tee 4
-    i32.xor
-    local.tee 5
-    local.get 0
-    local.get 1
-    i32.const 8
-    call $trustless_health::load_bit::h766865fc9d9aab0a
-    i32.const -1
-    i32.xor
-    local.tee 6
-    i32.xor
-    local.tee 7
-    local.get 0
-    local.get 1
-    i32.const 13
-    call $trustless_health::load_bit::h766865fc9d9aab0a
-    i32.const -1
-    i32.xor
-    local.tee 8
-    i32.xor
-    local.tee 9
-    local.get 0
-    local.get 1
-    i32.const 17
-    call $trustless_health::load_bit::h766865fc9d9aab0a
-    i32.const -1
-    i32.xor
-    local.tee 10
-    i32.xor
-    local.tee 11
-    local.get 0
-    local.get 1
-    i32.const 21
-    call $trustless_health::load_bit::h766865fc9d9aab0a
-    i32.const -1
-    i32.xor
-    local.tee 12
-    i32.xor
-    local.tee 13
-    local.get 0
-    local.get 1
-    i32.const 26
-    call $trustless_health::load_bit::h766865fc9d9aab0a
-    i32.const -1
-    i32.xor
-    local.tee 0
-    i32.xor
-    i32.store8 offset=31
-    local.get 2
-    local.get 11
-    local.get 12
-    i32.and
-    local.tee 1
-    local.get 9
-    local.get 10
-    i32.and
-    local.tee 9
-    local.get 7
-    local.get 8
-    i32.and
-    local.tee 7
-    local.get 5
-    local.get 6
-    i32.and
-    local.get 4
-    local.get 3
-    i32.or
-    i32.const -1
-    i32.xor
-    local.tee 3
-    i32.xor
-    local.tee 4
-    i32.xor
-    local.tee 5
-    i32.xor
-    local.tee 6
-    i32.xor
-    local.get 13
-    local.get 0
-    i32.and
-    local.tee 0
-    i32.xor
-    i32.store8 offset=30
-    local.get 2
-    local.get 0
-    local.get 6
-    i32.and
-    local.tee 0
-    local.get 1
-    local.get 5
-    i32.and
-    local.tee 1
-    local.get 9
-    local.get 4
-    i32.and
-    local.tee 4
-    local.get 7
-    local.get 3
-    i32.and
-    local.tee 3
-    i32.xor
-    local.tee 5
-    i32.xor
-    local.tee 6
-    i32.xor
-    i32.store8 offset=29
-    local.get 2
-    local.get 1
-    local.get 5
-    i32.and
-    local.get 4
-    local.get 3
-    i32.and
-    i32.xor
-    local.get 0
-    local.get 6
-    i32.and
-    i32.xor
-    i32.store8 offset=28
-    local.get 2
-    i32.const 32
-    call $trustless_health::byte_arr_to_u32::ha1723a0cb4443a41
-    local.set 0
-    local.get 2
-    i32.const 32
-    i32.add
-    global.set 0
-    local.get 0)
-'''
+f = open("compute.wat", "r")
+compute_wasm = f.read()
 
 class ASTNode:
     def __init__(self, command):
@@ -188,14 +24,6 @@ class StackVar:
     def __init__(self, value, type):
         self.value = value
         self.type = type
-
-class CpuVM:
-    def gate_or(self, a, b):
-        assert len(a) == len(b)
-        res = []
-        for i in range(len(a)):
-            res.append(a[i]|b[i])
-        return res
 
 def get_whitespace_prefix(line):
     pos = 0
@@ -231,7 +59,6 @@ def optionally_encrypt_bit(vm, var):
 def perform_computation(vm, wasm, encrypted_data):
     tree = generate_ast_tree_from_wasm(wasm)
 
-
     memory = [None] * 100000
 
     memory[0] = StackVar(0, 'i32') # array offset in memory
@@ -239,8 +66,13 @@ def perform_computation(vm, wasm, encrypted_data):
 
     global_memory = [StackVar(5000, 'i32')] # point to global memory
 
+    compute_command_id = 0
+    for idx, function in enumerate(tree.children):
+        if "$trustless_health::compute" in function.command:
+            compute_command_id = idx
+
     stack = []
-    for cmd in tree.children:
+    for cmd in tree.children[compute_command_id].children:
         cmd_arr = cmd.command.split(' ')
         keyword = cmd_arr[0]
 
@@ -325,14 +157,10 @@ def perform_computation(vm, wasm, encrypted_data):
             stack.pop()
             stack.append(res)
         elif keyword == "call" and cmd_arr[1].startswith("$trustless_health::byte_arr_to_u32"):
-            # load bit
-
             mem = memory[stack[-2].value:stack[-2].value+stack[-1].value]
-
-            mem = list([StackVar(0,'i32') if a is None else a for a in mem])
-
-            mem2 =  list([a.value if a.type == "LweArray" else vm.gate_constant(numpy.array([True if a.value == 1 else False])) for a in mem])
-            return mem2
+            mem2 = list([StackVar(0,'i32') if a is None else a for a in mem])
+            mem3 =  list([a.value if a.type == "LweArray" else vm.gate_constant(numpy.array([True if a.value == 1 else False])) for a in mem2])
+            return mem3
         elif keyword == "i32.or":
             if stack[-1].type == "i32" and stack[-2].type == "i32":
                 res = StackVar(stack[-1].value | stack[-2].value, "i32")
@@ -401,9 +229,6 @@ def encrypt():
         }
     )
 
-if __name__ == "__main__":
-    app.run(debug=True, port=5001)
-
 def test():
     ctx = nufhe.Context()
     secret_key, cloud_key = ctx.make_key_pair()
@@ -416,3 +241,8 @@ def test():
     result_bits = list([ctx.decrypt(secret_key, a) for a in result])
 
     print(result_bits)
+
+
+if __name__ == "__main__":
+    test()
+    #app.run(debug=True, port=5001)
