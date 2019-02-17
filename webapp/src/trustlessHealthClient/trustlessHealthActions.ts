@@ -109,12 +109,10 @@ export const submitPurchaseOfferingAction: ActionCreator<ISubmitPurchaseOffering
 
 export interface IStartEncryptionAndTransferAction extends Action {
     type: 'START_ENCRYPTION_AND_TRANSFER';
-    dataToEncrypt: string;
     host: string;
 }
 
-export const startEncryptionAndTransferAction: ActionCreator<IStartEncryptionAndTransferAction> = (dataToEncrypt, host) => ({
-    dataToEncrypt,
+export const startEncryptionAndTransferAction: ActionCreator<IStartEncryptionAndTransferAction> = (host) => ({
     host,
     type: START_ENCRYPTION_AND_TRANSFER,
 });

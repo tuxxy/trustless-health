@@ -8,12 +8,12 @@ import {
 
 export interface IMainState {
     darkMode: boolean;
-    dnaToEncrypt: string;
+    dataToEncrypt: string;
 }
 
 const defaultState: IMainState = {
     darkMode: false,
-    dnaToEncrypt: '',
+    dataToEncrypt: '',
 };
 
 export const mainReducer: Reducer<IMainState> = (
@@ -29,12 +29,12 @@ export const mainReducer: Reducer<IMainState> = (
         case SUBMIT_PURCHASE_OFFERING:
             return {
                 ...state,
-                dnaToEncrypt: action.dataToEncrypt
+                dataToEncrypt: action.dataToEncrypt
             };
         case RECEIVE_DECRYPTED_COMPUTED_DATA:
             return {
                 ...state,
-                dnaToEncrypt: ''
+                dataToEncrypt: ''
             };
         default:
             return state;
