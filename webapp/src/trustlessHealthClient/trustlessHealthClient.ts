@@ -51,7 +51,11 @@ export class TrustlessHealthClient {
     public GetCurrentAccount(): Promise<string> {
         return new Promise<string>(async (resolve, reject) => {
             this.web3.eth.getAccounts().then(accounts => {
-                resolve(accounts[0]) // Address at index 0 is the currently selected in MetaMask
+                const selectedAccount = accounts[0];
+                if (selectedAccount === undefined) {
+                    alert("Please unlock Meta Mask account to use this service");
+                }
+                resolve(selectedAccount) // Address at index 0 is the currently selected in MetaMask
             }).catch(error => {
                 console.error('Could not get account!');
             })

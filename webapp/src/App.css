@@ -81,7 +81,6 @@
 .panel-wrapper .panel-card-wide {
   flex: 0 0 90%;
   margin: 10px 0;
-  height: 100%;
 }
 
 .offering-title > span {
@@ -92,5 +91,17 @@
 }
 
 .bp3-panel-stack {
-  min-height: 50vh;
+  min-height: 60vh;
+}
+
+.callout-text {
+  padding-right: 10%;
+}
+
+.callout-spinner {
+  position: absolute;
+  top: 50%;
+  right: 3%;
+  transform: translateY(-50%);
+
 }

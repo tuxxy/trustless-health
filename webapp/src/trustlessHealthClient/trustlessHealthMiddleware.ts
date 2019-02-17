@@ -13,7 +13,7 @@ import {
     getOfferingsAction,
     INITIALIZE_TRUSTLESS_HEALTH,
     receiveCategoriesAction,
-    receiveDecryptedComputedDataAction,
+    receiveDecryptedComputedDataAction, receiveEncryptedComputedDataAction, receiveEncryptedDataAction,
     receiveOfferingsAction,
     START_ENCRYPTION_AND_TRANSFER,
     startEncryptionAndTransferAction,
@@ -106,7 +106,9 @@ export const trustlessHealthMiddleware: Middleware = ({dispatch, getState}: Midd
                 const data = main.dataToEncrypt;
                 const encodedData = TrustlessHealthClient.encode(data);
                 const encryptedData = await trustlessHealthClient.encrypt(encodedData, keyPair.secretKey);
+                dispatch(receiveEncryptedDataAction(encryptedData));
                 const computedData = await trustlessHealthClient.compute(action.host, encryptedData, keyPair.cloudKey);
+                dispatch(receiveEncryptedComputedDataAction(computedData));
                 const decryptedData = await trustlessHealthClient.decrypt(computedData, keyPair.secretKey);
                 resolve(decryptedData);
             }).then(decryptedComputedData => {

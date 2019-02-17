@@ -14,6 +14,7 @@ import '../App.css';
 
 FocusStyleManager.onlyShowFocusOnTabs(); // Do not show blue box around all buttons
 import ClientTabContainer from '../containers/clientTabContainer';
+import ComputeProgressContainer from '../containers/computeProgressContainer';
 import ProviderTabContainer from '../containers/providerTabContainer';
 import {IMainState} from '../reducers/mainReducer';
 
@@ -31,8 +32,7 @@ class Main extends React.Component<IProps, IState> {
     public state: IState = {
         navbarTabId: "home",
     };
-
-
+    
     public componentDidMount(): void {
         this.props.initializeTrustlessHealthAction();
     }
@@ -90,7 +90,7 @@ class Main extends React.Component<IProps, IState> {
                                     <>
                                         <div style={{textAlign: 'center', marginTop: '5%'}}>
                                             <h1 style={{fontSize: '2.5em'}}>Decentralizing Health Care</h1>
-                                            <p style={{fontSize: '1.5em'}}>By utilizing the power of Fully Homomorphic Encryption to provide health analysis without revealing highly sensitive data.</p>
+                                            <p style={{fontSize: '1.5em'}}>Utilizing the power of Fully Homomorphic Encryption to provide health analysis without revealing highly sensitive data.</p>
                                             <Button
                                                 onClick={this.handleGoToClient}
                                                 minimal={true}
@@ -106,6 +106,7 @@ class Main extends React.Component<IProps, IState> {
                     })()}
 
                 </div>
+                <ComputeProgressContainer/>
             </div>
         );
     }
