@@ -44,13 +44,13 @@ pub fn compute(input: &[u8]) -> u32 {
     let mut counter = [0u8; 4];
     let mut res = [0u8; 32];
 
-    let mutation1 = !load_bit(input, 1);
-    let mutation2 = !load_bit(input, 4);
-    let mutation3 = !load_bit(input, 8);
-    let mutation4 = !load_bit(input, 13);
-    let mutation5 = !load_bit(input, 17);
-    let mutation6 = !load_bit(input, 21);
-    let mutation7 = !load_bit(input, 26);
+    let mutation1 = !load_bit(input, 7);
+    let mutation2 = !load_bit(input, 16);
+    let mutation3 = !load_bit(input, 35);
+    let mutation4 = !load_bit(input, 39);
+    let mutation5 = !load_bit(input, 58);
+    let mutation6 = !load_bit(input, 63);
+    let mutation7 = !load_bit(input, 76);
 
     counter = increment_counter(&counter, mutation1);
     counter = increment_counter(&counter, mutation2);
