@@ -23,7 +23,7 @@ contract TrustlessHealth {
         uint offeringId;
     }
 
-    event purchasedOffering(analysisOffering offering, uint offeringId, uint receiptId);
+    event purchasedOffering(analysisOffering offering, uint offeringId, uint receiptId, address sender);
 
     constructor() public {
         owner = msg.sender;
@@ -60,6 +60,6 @@ contract TrustlessHealth {
 
         receipt memory purchaseReceipt = receipt(msg.sender, offeringId);
         receipts.push(purchaseReceipt);
-        emit purchasedOffering(offering, offeringId, receipts.length - 1);
+        emit purchasedOffering(offering, offeringId, receipts.length - 1, msg.sender);
     }
 }
