@@ -15,10 +15,11 @@ The front-end, hosted at [https://trustless.health](https://trustless.health/), 
 2. Log into MetaMask and set the RPC to https://trustless.health/ganache.
 3. Create an analysis category and offering in the "Provider" tab.
 4. Buy and run your analysis on a DNA string!
+
 Note: Currently all created analysis offerings will run the same algorithm.
 
 You can use the following strings to test:
-```
+
 GAAGCGTGAAGGCGTACTGCGGCTG  // Risk score 0
-GA*T*G*A*GTGA*G*G*CG*GT*T*CTG*T*GG*A*TG  // Risk score 4
-```
+GA**T**G**A**GTGA**G**G**CG**GT**T**CTG**T**GG**A**TG  // Risk score 4
+
