@@ -6,7 +6,7 @@ interface IProps {
     dataToEncrypt: string;
     encryptedData: string;
     encryptedComputedData: string;
-    decryptedComputedData: string;
+    decryptedComputedData: any;
     closeComputeProgressAction: () => void;
 }
 
