@@ -33,9 +33,6 @@ export class TrustlessHealthClient {
     private readonly clientServer = axios.create({
         baseURL: 'http://localhost:5000/',
     });
-    private readonly providerServer = axios.create({
-        baseURL: 'http://localhost:5001/',
-    });
 
     constructor() {
         this.initialize();
@@ -221,9 +218,9 @@ export class TrustlessHealthClient {
         });
     }
 
-    public compute(data: string, cloudKey: string) {
+    public compute(host: string, data: string, cloudKey: string) {
         console.log('Computing...');
-        return this.providerServer.post('compute', {
+        return axios.post(`${host}/compute`, {
             cloud_key: cloudKey,
             encrypted_data: data
         }).then((result: AxiosResponse) => {
