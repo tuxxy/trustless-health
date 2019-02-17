@@ -3,7 +3,7 @@ import { bindActionCreators, Dispatch } from 'redux';
 
 import { RootActions } from '../actions';
 import {toggleDarkModeAction} from "../actions/MainActions";
-import Main from '../components/Main';
+import Main from '../components/main';
 import { IRootState } from '../reducers';
 import {
     initializeTrustlessHealthAction

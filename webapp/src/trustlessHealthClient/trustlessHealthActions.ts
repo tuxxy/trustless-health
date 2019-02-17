@@ -9,6 +9,8 @@ export const RECEIVE_OFFERINGS = 'RECEIVE_OFFERINGS';
 export const CREATE_CATEGORY = 'CREATE_CATEGORY';
 export const SUBMIT_ANALYSIS_OFFERING = 'SUBMIT_ANALYSIS_OFFERING';
 export const SUBMIT_PURCHASE_OFFERING = 'SUBMIT_PURCHASE_OFFERING';
+export const START_ENCRYPTION_AND_TRANSFER = 'START_ENCRYPTION_AND_TRANSFER';
+export const RECEIVE_DECRYPTED_COMPUTED_DATA = 'RECEIVE_DECRYPTED_COMPUTED_DATA';
 
 export interface IInitializeTrustlessHealthAction extends Action {
     type: 'INITIALIZE_TRUSTLESS_HEALTH';
@@ -92,13 +94,39 @@ export interface ISubmitPurchaseOfferingAction extends Action {
     offeringId: number;
     offeringPrice: number;
     categoryId: number;
+    dataToEncrypt: string;
 }
 
-export const submitPurchaseOfferingAction: ActionCreator<ISubmitPurchaseOfferingAction> = (offeringId, offeringPrice, categoryId) => ({
-   categoryId,
-   offeringId,
-   offeringPrice,
-   type: SUBMIT_PURCHASE_OFFERING,
+export const submitPurchaseOfferingAction: ActionCreator<ISubmitPurchaseOfferingAction> = (
+    offeringId, offeringPrice, categoryId, dataToEncrypt
+) => ({
+    categoryId,
+    dataToEncrypt,
+    offeringId,
+    offeringPrice,
+    type: SUBMIT_PURCHASE_OFFERING,
+});
+
+export interface IStartEncryptionAndTransferAction extends Action {
+    type: 'START_ENCRYPTION_AND_TRANSFER';
+    dataToEncrypt: string;
+}
+
+export const startEncryptionAndTransferAction: ActionCreator<IStartEncryptionAndTransferAction> = (dataToEncrypt) => ({
+    dataToEncrypt,
+    type: START_ENCRYPTION_AND_TRANSFER,
+});
+
+export interface IReceiveDecryptedComputedDataAction extends Action {
+    type: 'RECEIVE_DECRYPTED_COMPUTED_DATA';
+    decryptedComputedData: string
+}
+
+export const receiveDecryptedComputedDataAction: ActionCreator<IReceiveDecryptedComputedDataAction> = (
+    decryptedComputedData
+) => ({
+    decryptedComputedData,
+    type: RECEIVE_DECRYPTED_COMPUTED_DATA,
 });
 
 export type TrustlessHealthActions =
@@ -109,4 +137,6 @@ export type TrustlessHealthActions =
     | IReceiveOfferingsAction
     | ICreateCategoryAction
     | ISubmitAnalysisOfferingAction
-    | ISubmitPurchaseOfferingAction;
+    | ISubmitPurchaseOfferingAction
+    | IStartEncryptionAndTransferAction
+    | IReceiveDecryptedComputedDataAction;
