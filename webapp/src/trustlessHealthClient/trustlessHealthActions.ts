@@ -10,6 +10,8 @@ export const CREATE_CATEGORY = 'CREATE_CATEGORY';
 export const SUBMIT_ANALYSIS_OFFERING = 'SUBMIT_ANALYSIS_OFFERING';
 export const SUBMIT_PURCHASE_OFFERING = 'SUBMIT_PURCHASE_OFFERING';
 export const START_ENCRYPTION_AND_TRANSFER = 'START_ENCRYPTION_AND_TRANSFER';
+export const RECEIVE_ENCRYPTED_DATA = 'RECEIVE_ENCRYPTED_DATA';
+export const RECEIVE_ENCRYPTED_COMPUTED_DATA = 'RECEIVE_ENCRYPTED_COMPUTED_DATA';
 export const RECEIVE_DECRYPTED_COMPUTED_DATA = 'RECEIVE_DECRYPTED_COMPUTED_DATA';
 
 export interface IInitializeTrustlessHealthAction extends Action {
@@ -117,6 +119,26 @@ export const startEncryptionAndTransferAction: ActionCreator<IStartEncryptionAnd
     type: START_ENCRYPTION_AND_TRANSFER,
 });
 
+export interface IReceiveEncryptedDataAction extends Action {
+    type: 'RECEIVE_ENCRYPTED_DATA';
+    encryptedData: string;
+}
+
+export const receiveEncryptedDataAction: ActionCreator<IReceiveEncryptedDataAction> = (encryptedData) => ({
+    encryptedData,
+    type: RECEIVE_ENCRYPTED_DATA,
+});
+
+export interface IReceiveEncryptedComputedDataAction extends Action {
+    type: 'RECEIVE_ENCRYPTED_COMPUTED_DATA';
+    encryptedComputedData: string;
+}
+
+export const receiveEncryptedComputedDataAction: ActionCreator<IReceiveEncryptedComputedDataAction> = (encryptedComputedData) => ({
+    encryptedComputedData,
+    type: RECEIVE_ENCRYPTED_COMPUTED_DATA,
+});
+
 export interface IReceiveDecryptedComputedDataAction extends Action {
     type: 'RECEIVE_DECRYPTED_COMPUTED_DATA';
     decryptedComputedData: string
@@ -139,4 +161,6 @@ export type TrustlessHealthActions =
     | ISubmitAnalysisOfferingAction
     | ISubmitPurchaseOfferingAction
     | IStartEncryptionAndTransferAction
+    | IReceiveEncryptedDataAction
+    | IReceiveEncryptedComputedDataAction
     | IReceiveDecryptedComputedDataAction;
