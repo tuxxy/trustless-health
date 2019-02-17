@@ -53,19 +53,19 @@ def encrypt():
 @cross_origin()
 def decrypt():
     data = request.json
-    encrypted_data = nufhe.LweSampleArray.loads(
-        base64.b64decode(data['encrypted_data']), ctx.thread)
+    encrypted_data = list([nufhe.LweSampleArray.loads(
+        base64.b64decode(a), ctx.thread) for a in data['encrypted_data']])
     secret_key = nufhe.NuFHESecretKey.loads(
         base64.b64decode(data['secret_key']), ctx.thread)
 
-    result_bits = ctx.decrypt(secret_key, encrypted_data)
+    result_bits = list([1 if ctx.decrypt(secret_key, a) [0] else 0 for a in encrypted_data])
 
     return jsonify(
         {
             "result": "success",
             "data":
                 {
-                    "result": list([int(a) for a in result_bits.tolist()])
+                    "result": result_bits
                 }
         }
     )

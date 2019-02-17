@@ -5250,19 +5250,19 @@
     local.get 2
     local.get 0
     local.get 1
-    i32.const 7
+    i32.const 1
     call $trustless_health::load_bit::h766865fc9d9aab0a
     local.tee 3
     local.get 0
     local.get 1
-    i32.const 16
+    i32.const 4
     call $trustless_health::load_bit::h766865fc9d9aab0a
     local.tee 4
     i32.xor
     local.tee 5
     local.get 0
     local.get 1
-    i32.const 35
+    i32.const 8
     call $trustless_health::load_bit::h766865fc9d9aab0a
     i32.const -1
     i32.xor
@@ -5271,7 +5271,7 @@
     local.tee 7
     local.get 0
     local.get 1
-    i32.const 39
+    i32.const 13
     call $trustless_health::load_bit::h766865fc9d9aab0a
     i32.const -1
     i32.xor
@@ -5280,7 +5280,7 @@
     local.tee 9
     local.get 0
     local.get 1
-    i32.const 58
+    i32.const 17
     call $trustless_health::load_bit::h766865fc9d9aab0a
     i32.const -1
     i32.xor
@@ -5289,7 +5289,7 @@
     local.tee 11
     local.get 0
     local.get 1
-    i32.const 63
+    i32.const 21
     call $trustless_health::load_bit::h766865fc9d9aab0a
     i32.const -1
     i32.xor
@@ -5298,7 +5298,7 @@
     local.tee 13
     local.get 0
     local.get 1
-    i32.const 76
+    i32.const 26
     call $trustless_health::load_bit::h766865fc9d9aab0a
     i32.const -1
     i32.xor
