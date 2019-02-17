@@ -128,19 +128,15 @@ def perform_computation(vm, wasm, encrypted_data):
             else:
                 print("Error, not offset found")
         elif keyword == "i32.store":
-
+            value_to_store = list([int(a) for a in stack[-1].value.to_bytes(4, byteorder='little')])
+            value_to_store = list([StackVar(a, 'i32') for a in value_to_store])
             if len(cmd_arr) > 1:
-                stack.pop()
-                value_to_store = stack[-1].value
                 offset = int(cmd_arr[1].split("=")[1]) + stack[-2].value
-                memory[offset] = StackVar(value_to_store, 'LweArray')
-                stack.pop()
             else:
-                value_to_store = list([int(a) for a in stack[-1].value.to_bytes(4, byteorder='little')])
-                value_to_store = list([StackVar(a, 'i32') for a in value_to_store])
-                memory[stack[-2].value:stack[-2].value+4] = value_to_store
-                stack.pop()
-                stack.pop()
+                offset = stack[-2].value
+            memory[offset:offset + 4] = value_to_store
+            stack.pop()
+            stack.pop()
         elif keyword == "i64.store":
             tmp = list([int(a) for a in stack[-1].value.to_bytes(8, byteorder='little')])
             tmp = list([StackVar(a,'i32') for a in tmp])
@@ -159,7 +155,7 @@ def perform_computation(vm, wasm, encrypted_data):
         elif keyword == "call" and cmd_arr[1].startswith("$trustless_health::byte_arr_to_u32"):
             mem = memory[stack[-2].value:stack[-2].value+stack[-1].value]
             mem2 = list([StackVar(0,'i32') if a is None else a for a in mem])
-            mem3 =  list([a.value if a.type == "LweArray" else vm.gate_constant(numpy.array([True if a.value == 1 else False])) for a in mem2])
+            mem3 = list([a.value if a.type == "LweArray" else vm.gate_constant(numpy.array([True if a.value == 1 else False])) for a in mem2])
             return mem3
         elif keyword == "i32.or":
             if stack[-1].type == "i32" and stack[-2].type == "i32":
@@ -233,16 +229,20 @@ def test():
     ctx = nufhe.Context()
     secret_key, cloud_key = ctx.make_key_pair()
     vm = ctx.make_virtual_machine(cloud_key)
-    bits1 = [0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+    bits1 = [0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
     ciphertext1 = ctx.encrypt(secret_key, bits1)
-
     result = perform_computation(vm, compute_wasm, ciphertext1)
-
-    result_bits = list([ctx.decrypt(secret_key, a) for a in result])
-
+    result_bits = list([1 if ctx.decrypt(secret_key, a)[0] else 0 for a in result])
     print(result_bits)
-
+    sum = 0
+    for b in result_bits:
+        sum = (sum << 1) | b
+    assert sum == 5
 
 if __name__ == "__main__":
-    test()
-    #app.run(debug=True, port=5001)
+    #test()
+    app.run(debug=True, port=5001)
+
+
+
+
