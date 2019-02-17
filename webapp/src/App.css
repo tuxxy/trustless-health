@@ -50,14 +50,14 @@
   to { transform: rotate(360deg); }
 }
 
-.category-wrapper {
+.panel-wrapper {
   margin: 10px;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
 }
 
-.category-wrapper .category {
+.panel-wrapper .category {
   flex: 0 0 30%;
   margin: 10px 0;
   text-align: center;

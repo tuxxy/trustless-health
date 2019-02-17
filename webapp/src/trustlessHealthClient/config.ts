@@ -26,6 +26,6 @@ export type Callback = (error: Error, result: any) => void;
 
 export class Config {
     public static chainId = 5777;
-    public static gasLimit = 100000;
+    public static gasLimit = 10000000;
     public static gasPrice = 50000;
 }

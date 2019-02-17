@@ -1,6 +1,6 @@
 import {Card, Elevation, IPanelProps} from "@blueprintjs/core";
 import * as React from "react";
-import ShowCategoriesContainer from "../containers/showCategoriesContainer";
+import ShowOfferingsContainer from "../containers/showOfferingsContainer";
 import {IShowCategoriesState} from "../reducers/showCategoriesReducer";
 
 interface IProps extends IShowCategoriesState {
@@ -14,16 +14,20 @@ export class ShowCategories extends React.Component<IPanelProps & IProps> {
     }
 
     public onClick = (index: number) => {
+        const category = this.props.categories[index];
         this.props.openPanel({
-            component: ShowCategoriesContainer,
-            title: 'HI!',
+            component: ShowOfferingsContainer,
+            props: {
+                categoryId: index,
+            },
+            title: `Choose offering from category ${category}`,
         });
     };
 
     public render() {
         const { categories } = this.props;
         return (
-            <div className={'category-wrapper'}>
+            <div className={'panel-wrapper'}>
                 {categories.map((category: string, idx: number) => {
                     return (
                         <Card
