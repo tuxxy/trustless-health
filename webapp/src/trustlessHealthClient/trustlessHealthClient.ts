@@ -1,6 +1,6 @@
 import axios, {AxiosResponse} from 'axios';
 import Web3 from 'web3';
-import {Callback, Config, IAnalysisOffering, ITxObj} from "./config";
+import {Callback, Config, IAnalysisOffering, IPurchasedOffer, ITxObj} from "./config";
 
 const contractJson = require('../contracts/TrustlessHealth.json');
 
@@ -172,7 +172,7 @@ export class TrustlessHealthClient {
         });
     }
 
-    public RegisterPurchasedOfferingListener(callback: (error: Error, result: any) => void): void {
+    public RegisterPurchasedOfferingListener(callback: (error: Error, result: IPurchasedOffer) => void): void {
         try {
             this.contract.events.purchasedOffering({
                 filter: {}
