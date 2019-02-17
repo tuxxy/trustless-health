@@ -39,7 +39,7 @@ export class TrustlessHealthClient {
     }
 
     public initialize(): void {
-        this.web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
+        this.web3 = new Web3(Web3.givenProvider || "wss://trustless.health/ganache/");
         this.contract = new this.web3.eth.Contract(this.contractABI, this.contractAddress);
 
         // TODO: Remove debugging statement below

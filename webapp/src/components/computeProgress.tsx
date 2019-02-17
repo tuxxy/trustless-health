@@ -6,7 +6,7 @@ interface IProps {
     dataToEncrypt: string;
     encryptedData: string;
     encryptedComputedData: string;
-    decryptedComputedData: string;
+    decryptedComputedData: any;
     closeComputeProgressAction: () => void;
 }
 
@@ -60,7 +60,9 @@ export class ComputeProgress extends React.Component<IProps> {
                     <br/>
                     {decryptedComputedData !== '' && <>
                         <Callout intent="success" title="Result">
-                            {decryptedComputedData}
+                            {decryptedComputedData} = {parseInt( decryptedComputedData.join(""), 2 )}
+                            <br /><br />
+                            <b>Risk score: {parseInt( decryptedComputedData.join(""), 2 )} / 7 </b>
                         </Callout>
                     </>}
                 </div>

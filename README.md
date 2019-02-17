@@ -1,7 +1,7 @@
 # Trustless.Health
 We present a WebAssembly interpreter with Fully Homomorphic Encryption to power a dapp for zero-knowledge analysis of sensitive medical data.
 
-Today, we are experiencing an explosion of the amount of medical data about us - full genome sequencing, microbiome data, etc - and this presents an opportunity of machine learning algorithms to significantly improve health case. However, the current services requires you to upload your medical data in clear text (unacceptable with respect to privacy) and lacks proper bench-marking. We introduce Trustless.Health, a decentralised and transparent platform for machine analysis of medical data based on top of Ethereum. We also present **fhe-wasm**, a WebAssembly interpreter with support for full homomorphic encryption, that backs all models on Trustless.Health meaning no user data (including the results of the analysis!) is ever revealed to the model service providers.
+Today, we are experiencing rapid growth in the amount of medical data collected - full genome sequencing, microbiome data, etc - and this presents an opportunity for machine learning algorithms to significantly improve health care. However, the current services require you to upload your medical data in clear text (unacceptable with regards to privacy) and lacks proper bench-marking. We introduce Trustless.Health, a decentralised and transparent platform for machine analysis of medical data based on top of Ethereum. We also present fhe-wasm, a WebAssembly interpreter with support for full homomorphic encryption, that backs all models on Trustless.Health meaning no user data (including the results of the analysis!) is ever revealed to the model service providers.
 
 This project was started at the [ETH Denver Hackaton 2019](https://www.ethdenver.com).
 
@@ -12,9 +12,9 @@ The front-end, hosted at [https://trustless.health](https://trustless.health/), 
 
 ## Try it out!
 1. Go to [https://trustless.health](https://trustless.health/)
-2. Log into MetaMask and set the RPC to https://trustless.health/ganache.
+2. Log into MetaMask and set the RPC to https://trustless.health/ganache/ .
 3. Create an analysis category and offering in the "Provider" tab.
-4. Buy and run your analysis on a DNA string!
+4. Buy and run your analysis on a DNA string! (ask the team if you require some test eth)
 
 Note: Currently all created analysis offerings will run the same algorithm.
 

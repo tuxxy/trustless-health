@@ -47,7 +47,7 @@ class Main extends React.Component<IProps, IState> {
             <div className="App">
                 <Navbar>
                     <NavbarGroup align={Alignment.LEFT}>
-                        <NavbarHeading><h3>Trustless Health</h3></NavbarHeading>
+                        <NavbarHeading><h3>Trustless.Health</h3></NavbarHeading>
                     </NavbarGroup>
                     <NavbarGroup align={Alignment.RIGHT}>
                         <Tabs
