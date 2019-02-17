@@ -12,7 +12,7 @@ import {
     NavbarDivider,
     NavbarGroup,
     NavbarHeading,
-    PanelStack,
+    PanelStack, Position, Tooltip,
 } from "@blueprintjs/core";
 
 FocusStyleManager.onlyShowFocusOnTabs(); // Do not show blue box around all buttons
@@ -22,7 +22,6 @@ import {IMainState} from "../reducers/mainReducer";
 interface IProps extends IMainState {
     initializeTrustlessHealthAction: () => void;
     toggleDarkModeAction: () => void;
-    transferEthFromPrivateKey: (quantity: number) => void;
 }
 
 class Main extends React.Component<IProps> {
@@ -35,11 +34,8 @@ class Main extends React.Component<IProps> {
         document.body.className = this.props.darkMode ? 'Core-dark bp3-dark' : 'Core';
     }
 
-    public handleAdminTransfer = () => {
-        this.props.transferEthFromPrivateKey(1)
-    };
-
     public render() {
+        const {darkMode} = this.props;
         return (
             <div className="App">
                 <Navbar>
@@ -50,12 +46,16 @@ class Main extends React.Component<IProps> {
                         <NavbarDivider/>
                         <Button className={Classes.MINIMAL} icon="home" text="Home"/>
                         <Button className={Classes.MINIMAL} icon="settings" text="Options"/>
-                        <Button
-                            className={Classes.MINIMAL}
-                            icon="lightbulb"
-                            text="Dark Mode"
-                            onClick={this.props.toggleDarkModeAction}
-                        />
+                        <Tooltip
+                            content={`Change to ${darkMode ? 'light' : 'dark'} theme`}
+                            position={Position.RIGHT}>
+                            <Button
+                                className={Classes.MINIMAL}
+                                icon={darkMode ? 'lightbulb' : 'moon'}
+                                text=""
+                                onClick={this.props.toggleDarkModeAction}
+                            />
+                        </Tooltip>
                     </NavbarGroup>
                 </Navbar>
                 <div className={'page-wrapper'}>
@@ -70,7 +70,6 @@ class Main extends React.Component<IProps> {
                         <PanelStack initialPanel={{ component: ShowCategories, title: "Choose category" }} />
                     </div>
                 </div>
-                <Button onClick={this.handleAdminTransfer}>Transfer ETH from admin</Button>
             </div>
         );
     }
