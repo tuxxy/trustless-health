@@ -1,4 +1,3 @@
-import axios from 'axios';
 import {Dispatch, Middleware, MiddlewareAPI} from 'redux';
 import {RootActions} from "../actions";
 import {IAnalysisOffering, IPurchasedOffer} from "./config";
@@ -107,11 +106,12 @@ export const trustlessHealthMiddleware: Middleware = ({dispatch, getState}: Midd
                 const data = action.dataToEncrypt;
                 const encodedData = TrustlessHealthClient.encode(data);
                 const encryptedData = await trustlessHealthClient.encrypt(encodedData, keyPair.secretKey);
-                const request = axios.post('http://localhost:5001', {
-                    cloud_key: keyPair.cloudKey, encrypted_data: encryptedData });
-                resolve(request);
-            }).then(decodedComputedData => {
-                 dispatch(receiveDecryptedComputedDataAction(decodedComputedData));
+                const computedData = await trustlessHealthClient.compute(action.host, encryptedData, keyPair.cloudKey);
+                const decryptedData = await trustlessHealthClient.decrypt(computedData, keyPair.secretKey);
+                resolve(decryptedData);
+            }).then(decryptedComputedData => {
+                console.log(decryptedComputedData)
+                 dispatch(receiveDecryptedComputedDataAction(decryptedComputedData));
              });
             break;
 
