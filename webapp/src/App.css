@@ -94,3 +94,15 @@
 .bp3-panel-stack {
   min-height: 50vh;
 }
+
+.flex-grid {
+  display: flex;
+}
+.col {
+  flex: 1;
+}
+
+.callout-spinner {
+  margin-top: -25px;
+  margin-right: -150px;
+}
