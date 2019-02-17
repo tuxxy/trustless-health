@@ -1,0 +1,15 @@
+[package]
+name = "rust"
+version = "0.1.0"
+authors = [""]
+edition = "2018"
+
+[dependencies]
+cfg-if = "0.1.6"
+wasm-bindgen = "0.2.37"
+js-sys = "0.3.14"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+name="trustless_health"
+path="src/lib.rs"
