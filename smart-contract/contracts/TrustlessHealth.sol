@@ -52,7 +52,7 @@ contract TrustlessHealth {
         return analysisOfferings[categoryId];
     }
 
-    function purchaseOffering(uint offeringId, uint categoryId) public payable returns(purchasedOfferingReturn memory) {
+    function purchaseOffering(uint offeringId, uint categoryId) public payable {
         require(categoryExists(categoryId));
         analysisOffering memory offering = analysisOfferings[categoryId][offeringId];
         require(offering.isValid);
