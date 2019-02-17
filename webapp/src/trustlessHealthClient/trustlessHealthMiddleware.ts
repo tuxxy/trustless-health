@@ -27,7 +27,8 @@ export const trustlessHealthMiddleware: Middleware = ({dispatch, getState}: Midd
 
             const purchasedOfferingCallback = (error: Error, result: any) => {
                 if (!error) {
-                    console.log('Offer was purchased')
+                    console.log('Offer was purchased');
+                    console.log(result);
                 } else {
                     console.error('Purchase of offer failed!');
                 }
@@ -97,7 +98,7 @@ export const trustlessHealthMiddleware: Middleware = ({dispatch, getState}: Midd
                 }
             };
             trustlessHealthClient.SubmitPurchaseOffering(
-                action.offeringId, action.categoryId, submitPurchaseOfferingCallback);
+                action.offeringId, action.offeringPrice, action.categoryId, submitPurchaseOfferingCallback);
             break;
 
         default:

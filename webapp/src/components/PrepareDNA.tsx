@@ -4,7 +4,8 @@ import * as React from "react";
 interface IProps {
     categoryId: number;
     offeringId: number;
-    submitPurchaseOfferingAction: (offeringId: number, categoryId: number) => void
+    offeringPrice: number;
+    submitPurchaseOfferingAction: (offeringId: number, offeringPrice: number, categoryId: number) => void
 }
 
 interface IState {
@@ -43,9 +44,9 @@ export class PrepareDNA extends React.Component<IPanelProps & IProps, IState> {
     };
 
     public handleContinue = async() => {
-        const { categoryId, offeringId } = this.props;
+        const { categoryId, offeringId, offeringPrice } = this.props;
         this.handleCloseDialog();
-        this.props.submitPurchaseOfferingAction(offeringId, categoryId);
+        this.props.submitPurchaseOfferingAction(offeringId, offeringPrice, categoryId);
         /*
         const trustlessHealthClient = new TrustlessHealthClient();
         const keypair = await trustlessHealthClient.getKeyPair();

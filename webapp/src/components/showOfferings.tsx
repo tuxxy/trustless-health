@@ -23,6 +23,7 @@ export class ShowOfferings extends React.Component<IPanelProps & IProps> {
             props: {
                 categoryId: this.props.categoryId,
                 offeringId: index,
+                offeringPrice: offering.price,
             },
             title: offering.title,
         });

@@ -11,7 +11,7 @@ contract TrustlessHealth {
     struct analysisOffering {
         string host;
         address payable paymentAddress;
-        uint256 price;
+        uint price;
         uint categoryId;
         string title;
         string description;
@@ -23,7 +23,7 @@ contract TrustlessHealth {
         uint offeringId;
     }
 
-    event purchasedOffering(analysisOffering offering, receipt purchaseReceipt);
+    event purchasedOffering(analysisOffering offering, uint offeringId, uint receiptId);
 
     constructor() public {
         owner = msg.sender;
@@ -52,7 +52,7 @@ contract TrustlessHealth {
         return analysisOfferings[categoryId];
     }
 
-    function purchaseOffering(uint offeringId, uint categoryId) public {
+    function purchaseOffering(uint offeringId, uint categoryId) public payable returns(purchasedOfferingReturn memory) {
         require(categoryExists(categoryId));
         analysisOffering memory offering = analysisOfferings[categoryId][offeringId];
         require(offering.isValid);
@@ -60,6 +60,6 @@ contract TrustlessHealth {
 
         receipt memory purchaseReceipt = receipt(msg.sender, offeringId);
         receipts.push(purchaseReceipt);
-        emit purchasedOffering(offering, purchaseReceipt);
+        emit purchasedOffering(offering, offeringId, receipts.length - 1);
     }
 }

@@ -105,7 +105,7 @@ export class TrustlessHealthClient {
                 }
                 const {numberToHex} = this.web3.utils;
                 const encodedTx = this.contract.methods.submitAnalysisOffering(
-                    host, paymentAddress, price, categoryId, title, description).encodeABI();
+                    host, paymentAddress, numberToHex(price), categoryId, title, description).encodeABI();
 
                 const txObj: ITxObj = {
                     chainId: Config.chainId,
@@ -125,6 +125,7 @@ export class TrustlessHealthClient {
 
     public SubmitPurchaseOffering(
         offeringId: number,
+        offeringPrice: number,
         categoryId: number,
         callback: Callback): void {
         try {
@@ -142,7 +143,8 @@ export class TrustlessHealthClient {
                     from: fromAddress,
                     gasLimit: numberToHex(Config.gasLimit),
                     gasPrice: numberToHex(Config.gasPrice),
-                    to: this.contractAddress
+                    to: this.contractAddress,
+                    value: numberToHex(offeringPrice),
                 };
                 this.web3.eth.sendTransaction(txObj, callback);
             })

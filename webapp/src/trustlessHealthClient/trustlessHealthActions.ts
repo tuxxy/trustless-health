@@ -90,12 +90,14 @@ export const submitAnalysisOfferingAction: ActionCreator<ISubmitAnalysisOffering
 export interface ISubmitPurchaseOfferingAction extends Action {
     type: 'SUBMIT_PURCHASE_OFFERING';
     offeringId: number;
+    offeringPrice: number;
     categoryId: number;
 }
 
-export const submitPurchaseOfferingAction: ActionCreator<ISubmitPurchaseOfferingAction> = (offeringId, categoryId) => ({
+export const submitPurchaseOfferingAction: ActionCreator<ISubmitPurchaseOfferingAction> = (offeringId, offeringPrice, categoryId) => ({
    categoryId,
    offeringId,
+   offeringPrice,
    type: SUBMIT_PURCHASE_OFFERING,
 });
 
