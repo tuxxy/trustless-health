@@ -6,12 +6,16 @@ import {TrustlessHealthClient} from "./trustlessHealthClient";
 const trustlessHealthClient = new TrustlessHealthClient();
 
 import {
-    CREATE_CATEGORY, GET_CATEGORIES, GET_OFFERINGS,
-    getCategoriesAction, getOfferingsAction,
+    CREATE_CATEGORY,
+    GET_CATEGORIES,
+    GET_OFFERINGS,
+    getCategoriesAction,
+    getOfferingsAction,
     INITIALIZE_TRUSTLESS_HEALTH,
     receiveCategoriesAction,
-    receiveOfferingsAction, SUBMIT_ANALYSIS_OFFERING, SUBMIT_PURCHASE_OFFERING,
-    TRANSFER_ETH_FROM_PRIVATE_KEY,
+    receiveOfferingsAction,
+    SUBMIT_ANALYSIS_OFFERING,
+    SUBMIT_PURCHASE_OFFERING,
 } from "./trustlessHealthActions";
 
 export const trustlessHealthMiddleware: Middleware = ({dispatch, getState}: MiddlewareAPI) => (
@@ -29,16 +33,6 @@ export const trustlessHealthMiddleware: Middleware = ({dispatch, getState}: Midd
                 }
             };
             trustlessHealthClient.RegisterPurchasedOfferingListener(purchasedOfferingCallback);
-            break;
-
-        case TRANSFER_ETH_FROM_PRIVATE_KEY:
-            trustlessHealthClient.SendEthFromPrivateKey(action.quantity)
-                .then(() => {
-                    console.log('Transaction sent')
-                })
-                .catch((error) => {
-                    console.error(error)
-                });
             break;
 
         case GET_CATEGORIES:

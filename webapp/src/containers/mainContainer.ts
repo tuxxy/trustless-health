@@ -5,7 +5,7 @@ import { RootActions } from '../actions';
 import {toggleDarkModeAction} from "../actions/MainActions";
 import Main from '../components/Main';
 import { IRootState } from '../reducers';
-import {initializeTrustlessHealthAction, transferEthFromPrivateKey} from "../trustlessHealthClient/trustlessHealthActions";
+import {initializeTrustlessHealthAction} from "../trustlessHealthClient/trustlessHealthActions";
 
 const mapStateToProps = (state: IRootState) => ({
     darkMode: state.main.darkMode,
@@ -16,7 +16,6 @@ const mapDispatchToProps = (dispatch: Dispatch<RootActions>) =>
         {
             initializeTrustlessHealthAction,
             toggleDarkModeAction,
-            transferEthFromPrivateKey,
         },
         dispatch
     );

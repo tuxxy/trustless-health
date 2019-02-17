@@ -2,7 +2,6 @@ import {Action, ActionCreator} from 'redux';
 import {IAnalysisOffering} from "./config";
 
 export const INITIALIZE_TRUSTLESS_HEALTH = 'INITIALIZE_TRUSTLESS_HEALTH';
-export const TRANSFER_ETH_FROM_PRIVATE_KEY = 'TRANSFER_ETH_FROM_PRIVATE_KEY';
 export const GET_CATEGORIES = 'GET_CATEGORIES';
 export const RECEIVE_CATEGORIES = 'RECEIVE_CATEGORIES';
 export const GET_OFFERINGS = 'GET_OFFERINGS';
@@ -17,20 +16,6 @@ export interface IInitializeTrustlessHealthAction extends Action {
 
 export const initializeTrustlessHealthAction: ActionCreator<IInitializeTrustlessHealthAction> = () => ({
     type: INITIALIZE_TRUSTLESS_HEALTH
-});
-
-export interface ITransferEthFromPrivateKeyAction extends Action {
-    type: 'TRANSFER_ETH_FROM_PRIVATE_KEY';
-    quantity: number;
-    receivingAddress: string;
-    privateKey: string;
-}
-
-export const transferEthFromPrivateKey: ActionCreator<ITransferEthFromPrivateKeyAction> = (quantity, receivingAddress, privateKey) => ({
-    privateKey,
-    quantity,
-    receivingAddress,
-    type: TRANSFER_ETH_FROM_PRIVATE_KEY,
 });
 
 export interface IGetCategoriesAction extends Action {
@@ -116,7 +101,6 @@ export const submitPurchaseOfferingAction: ActionCreator<ISubmitPurchaseOffering
 
 export type TrustlessHealthActions =
     | IInitializeTrustlessHealthAction
-    | ITransferEthFromPrivateKeyAction
     | IGetCategoriesAction
     | IReceiveCategoriesAction
     | IGetOfferingsAction

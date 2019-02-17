@@ -54,39 +54,10 @@ export class TrustlessHealthClient {
     public GetCurrentAccount(): Promise<string> {
         return new Promise<string>(async (resolve, reject) => {
             this.web3.eth.getAccounts().then(accounts => {
-                resolve(accounts[0])
+                resolve(accounts[0]) // Address at index 0 is the currently selected in MetaMask
             }).catch(error => {
                 console.error('Could not get account!');
             })
-        })
-    }
-
-    public SendEthFromPrivateKey(quantity: number): Promise<void> {
-        return new Promise<void>(async (resolve, reject) => {
-            const privateKey = '0xca15bedb59f1aadc2181bbbc85ea0fd7a0ce48769ea981884a63767dae35c26a';
-            const receivingAddress = await this.GetCurrentAccount();
-            console.log(receivingAddress);
-            if (receivingAddress === null || receivingAddress === undefined) {
-                reject(new Error('Account not set'));
-                return;
-            }
-            const {numberToHex} = this.web3.utils;
-            const txObject = {
-                gasLimit: numberToHex(Config.gasLimit),
-                gasPrice: numberToHex(Config.gasPrice),
-                to: receivingAddress,
-                value: quantity * 10 ** 18,
-            };
-
-            const {rawTransaction} = await this.web3.eth.accounts.signTransaction(txObject, privateKey);
-            // @ts-ignore
-            this.web3.eth.sendSignedTransaction(rawTransaction)
-                .on('receipt', (result: any) => {
-                    console.log(result);
-                    resolve();
-                }).on('error', (error: Error) => {
-                console.error(error)
-            });
         })
     }
 
