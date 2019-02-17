@@ -37,7 +37,7 @@ def encrypt():
             "result": "success",
             "data":
                 {
-                    "encrypted_result": list([base64.b64encode(a.dumps()) for a in result]).decode('ascii')
+                    "encrypted_result": list([base64.b64encode(a.dumps()).decode('ascii') for a in result])
                 }
         }
     )
