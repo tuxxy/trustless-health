@@ -151,16 +151,6 @@ export class TrustlessHealthClient {
         }
     }
 
-    public CategoryExists(categoryId: number): Promise<boolean> {
-        return new Promise<boolean>(async (resolve, reject) => {
-            try {
-                resolve(await this.contract.methods.categoryExists(categoryId).call());
-            } catch (e) {
-                reject(e)
-            }
-        })
-    }
-
     public GetCategories(): Promise<string[]> {
         return new Promise<string[]>(async (resolve, reject) => {
             try {
