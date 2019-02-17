@@ -11,7 +11,7 @@ import {
 
 const mapStateToProps = (state: IRootState) => ({
     darkMode: state.main.darkMode,
-    dnaToEncrypt: state.main.dnaToEncrypt,
+    dataToEncrypt: state.main.dataToEncrypt,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<RootActions>) =>

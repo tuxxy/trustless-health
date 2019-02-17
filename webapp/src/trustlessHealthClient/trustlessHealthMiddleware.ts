@@ -30,7 +30,7 @@ export const trustlessHealthMiddleware: Middleware = ({dispatch, getState}: Midd
 
             const purchasedOfferingCallback = (error: Error, result: IPurchasedOffer) => {
                 if (!error) {
-                    dispatch(startEncryptionAndTransferAction(main.dnaToEncrypt, result.returnValues.offering.host));
+                    dispatch(startEncryptionAndTransferAction(main.dataToEncrypt, result.returnValues.offering.host));
                 } else {
                     console.error('Purchase of offer failed!');
                 }
