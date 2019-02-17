@@ -1,30 +1,37 @@
 import {
     Alignment,
-    Button, Card,
+    Button,
     Classes,
     FocusStyleManager,
     Navbar,
     NavbarDivider,
     NavbarGroup,
     NavbarHeading,
-    PanelStack, Position, Tooltip,
+    Position, Tab, Tabs, Tooltip,
 } from "@blueprintjs/core";
 import * as React from 'react';
 import '../App.css';
-import NewCategoryContainer from '../containers/newCategoryContainer';
-import ShowCategoriesContainer from "../containers/showCategoriesContainer";
-import PrepareDNA from "./PrepareDNA";
 
 FocusStyleManager.onlyShowFocusOnTabs(); // Do not show blue box around all buttons
-
-import {IMainState} from "../reducers/mainReducer";
+import ClientTabContainer from '../containers/clientTabContainer';
+import ProviderTabContainer from '../containers/providerTabContainer';
+import {IMainState} from '../reducers/mainReducer';
 
 interface IProps extends IMainState {
     initializeTrustlessHealthAction: () => void;
     toggleDarkModeAction: () => void;
 }
 
-class Main extends React.Component<IProps> {
+interface IState {
+    navbarTabId: string;
+}
+
+class Main extends React.Component<IProps, IState> {
+
+    public state: IState = {
+        navbarTabId: "home",
+    };
+
 
     public componentDidMount(): void {
         this.props.initializeTrustlessHealthAction();
@@ -43,9 +50,18 @@ class Main extends React.Component<IProps> {
                         <NavbarHeading><h3>Trustless Health</h3></NavbarHeading>
                     </NavbarGroup>
                     <NavbarGroup align={Alignment.RIGHT}>
+                        <Tabs
+                            animate={true}
+                            id="navbar"
+                            large={true}
+                            onChange={this.handleNavbarTabChange}
+                            selectedTabId={this.state.navbarTabId}
+                        >
+                            <Tab id="home" title="Home"/>
+                            <Tab id="client" title="Client"/>
+                            <Tab id="provider" title="Provider"/>
+                        </Tabs>
                         <NavbarDivider/>
-                        <Button className={Classes.MINIMAL} icon="home" text="Home"/>
-                        <Button className={Classes.MINIMAL} icon="settings" text="Options"/>
                         <Tooltip
                             content={`Change to ${darkMode ? 'light' : 'dark'} theme`}
                             position={Position.RIGHT}>
@@ -59,25 +75,34 @@ class Main extends React.Component<IProps> {
                     </NavbarGroup>
                 </Navbar>
                 <div className={'page-wrapper'}>
-                    <p className="App-intro">
-                        Using Fully Homomorphic Encryption to provide patients
-                        with a choice of which company's health analysis tool to use.
-                    </p>
-                    <div className={'widget-wrapper'}>
-                        <PrepareDNA />
-                    </div>
-                    <div className={'widget-wrapper'}>
-                        <NewCategoryContainer/>
-                    </div>
-                    <div className={'widget-wrapper'}>
-                        <Card>
-                            <PanelStack initialPanel={{ component: ShowCategoriesContainer, title: "Choose category" }} />
-                        </Card>
-                    </div>
+                    {(() => {
+                        switch (this.state.navbarTabId) {
+                            case 'client':
+                                return (
+                                    <ClientTabContainer/>
+                                );
+                            case 'provider':
+                                return (
+                                    <ProviderTabContainer/>
+                                );
+                            default:
+                                return (
+                                    <div>
+                                        <p className="App-intro">
+                                            Using Fully Homomorphic Encryption to provide patients
+                                            with a choice of which company's health analysis tool to use.
+                                        </p>
+                                    </div>
+                                );
+                        }
+                    })()}
+
                 </div>
             </div>
         );
     }
+
+    private handleNavbarTabChange = (navbarTabId: string) => this.setState({navbarTabId});
 }
 
 export default Main;
