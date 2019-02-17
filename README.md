@@ -9,3 +9,16 @@ This project was started at the [ETH Denver Hackaton 2019](https://www.ethdenver
 The core of Trustless.Health is the compute engine which runs all models using fully homomorphic encryption. To make sure the platform would support as many languages as possible an interpreter was written on top of NuCypher's nufhe package. Thereby, it was achieved to execute models compiled for WebAssembly under FHE. In the **rust-example** directory, we show how a DNA analysis model written in Rust is compiled to WASM and then executed on encrypted input data using **fhe-wasm**.
 
 The front-end, hosted at [https://trustless.health](https://trustless.health/), is a React/Redux webapp written in typescript with ts-lint for strong type-safety. The web app uses axios to query a local Python server, which uses the nufhe package to generate encryption keys as well as encrypting/decrypting of messages. Users should run this locally (see the client-server directory). The webapp is web3 compatible and should work out of the box with Metamask.
+
+## Try it out!
+1. Go to [https://trustless.health](https://trustless.health/)
+2. Log into MetaMask and set the RPC to https://trustless.health/ganache.
+3. Create an analysis category and offering in the "Provider" tab.
+4. Buy and run your analysis on a DNA string!
+Note: Currently all created analysis offerings will run the same algorithm.
+
+You can use the following strings to test:
+```
+GAAGCGTGAAGGCGTACTGCGGCTG  // Risk score 0
+GA*T*G*A*GTGA*G*G*CG*GT*T*CTG*T*GG*A*TG  // Risk score 4
+```
