@@ -1,6 +1,6 @@
 import {Card} from "@blueprintjs/core";
 import * as React from "react";
-import NewCategoryContainer from "./clientTab";
+import NewCategoryContainer from "../containers/newCategoryContainer";
 
 export class ProviderTab extends React.Component {
 

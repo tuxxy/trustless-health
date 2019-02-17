@@ -16,6 +16,7 @@ FocusStyleManager.onlyShowFocusOnTabs(); // Do not show blue box around all butt
 import ClientTabContainer from '../containers/clientTabContainer';
 import ProviderTabContainer from '../containers/providerTabContainer';
 import {IMainState} from '../reducers/mainReducer';
+import Home from "./home";
 
 interface IProps extends IMainState {
     initializeTrustlessHealthAction: () => void;
@@ -87,12 +88,7 @@ class Main extends React.Component<IProps, IState> {
                                 );
                             default:
                                 return (
-                                    <div>
-                                        <p className="App-intro">
-                                            Using Fully Homomorphic Encryption to provide patients
-                                            with a choice of which company's health analysis tool to use.
-                                        </p>
-                                    </div>
+                                    <Home/>
                                 );
                         }
                     })()}

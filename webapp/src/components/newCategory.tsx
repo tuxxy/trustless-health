@@ -32,7 +32,6 @@ export class NewCategory extends React.Component<IProps, IState> {
     public render() {
         const { category } = this.state;
         return (
-            <>
                 <Card>
                     <label className="bp3-label">
                         Category name
@@ -42,7 +41,6 @@ export class NewCategory extends React.Component<IProps, IState> {
                         <Button intent={Intent.SUCCESS} onClick={this.onClick}>Create new category</Button>
                     )}
                 </Card>
-            </>
         )
     }
 }
