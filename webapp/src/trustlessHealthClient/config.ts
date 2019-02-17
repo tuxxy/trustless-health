@@ -22,6 +22,14 @@ export interface IAnalysisOffering {
     isValid: boolean;
 }
 
+export interface IPurchasedOffer {
+    returnValues: {
+        offering: {
+            host: string
+        }
+    }
+}
+
 export type Callback = (error: Error, result: any) => void;
 
 export class Config {
