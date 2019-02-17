@@ -1,4 +1,4 @@
-import {Button, Card, InputGroup, Intent} from "@blueprintjs/core";
+import {Button, Callout, Card, InputGroup, Intent} from "@blueprintjs/core";
 import * as React from "react";
 import NewCategoryContainer from "../containers/newCategoryContainer";
 
@@ -48,16 +48,19 @@ export class ProviderTab extends React.Component<IProps, IState> {
                 </div>
                 <div className={'widget-wrapper'}>
                     <Card>
-                        <h4>Submit Analysis Offering</h4>
+                        <Callout icon="add-to-artifact" intent="none" title="Submit Analysis Offering">
+                            Fill out the details
+                        </Callout>
+                        <br/>
                         {categories.length > 0 ?
                             <>
                                 <label className="bp3-label">
                                     Category
-                                    <br/>
+                                    <div className="bp3-select" style={{width: '25%'}}>
                                     <select
                                         value={categoryIdSelected}
                                         onChange={this.handleAccountSelect}
-                                        style={{width: '25%'}}
+                                        style={{width: '100%'}}
                                     >
                                         {categories.map((name, index) => (
                                             <option key={index} value={index}>
@@ -65,26 +68,27 @@ export class ProviderTab extends React.Component<IProps, IState> {
                                             </option>
                                         ))}
                                     </select>
+                                    </div>
                                 </label>
                                 <label className="bp3-label">
                                     Title
-                                    <InputGroup onChange={this.onChangeTitle} value={title}/>
+                                    <InputGroup type="text" onChange={this.onChangeTitle} value={title}/>
                                 </label>
                                 <label className="bp3-label">
                                     Description
-                                    <InputGroup onChange={this.onChangeDescription} value={description}/>
+                                    <InputGroup type="text" onChange={this.onChangeDescription} value={description}/>
                                 </label>
                                 <label className="bp3-label">
                                     Address to receive payments
-                                    <InputGroup onChange={this.onChangePaymentAddress} value={paymentAddress}/>
+                                    <InputGroup type="text" onChange={this.onChangePaymentAddress} value={paymentAddress}/>
                                 </label>
                                 <label className="bp3-label">
                                     Host
-                                    <InputGroup onChange={this.onChangeHost} value={host}/>
+                                    <InputGroup type="text" onChange={this.onChangeHost} value={host}/>
                                 </label>
                                 <label className="bp3-label">
-                                    Price
-                                    <InputGroup onChange={this.onChangePrice} value={price.toString()}/>
+                                    Price in ETH
+                                    <InputGroup type="number" onChange={this.onChangePrice} value={price.toString()}/>
                                 </label>
 
                                 <Button
@@ -131,7 +135,7 @@ export class ProviderTab extends React.Component<IProps, IState> {
 
     private handleOfferSubmit = () => {
         const {categoryIdSelected, title, description, host, paymentAddress, price} = this.state;
-        this.props.submitAnalysisOfferingAction(host, paymentAddress, price, categoryIdSelected, title, description);
+        this.props.submitAnalysisOfferingAction(host, paymentAddress, price*10**18, categoryIdSelected, title, description);
     };
 }
 

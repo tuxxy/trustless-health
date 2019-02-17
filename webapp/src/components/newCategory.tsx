@@ -1,4 +1,4 @@
-import {Button, Card, InputGroup, Intent} from "@blueprintjs/core";
+import {Button, Callout, Card, InputGroup, Intent} from "@blueprintjs/core";
 import * as React from "react";
 
 interface IProps {
@@ -35,7 +35,10 @@ export class NewCategory extends React.Component<IProps, IState> {
         const {category} = this.state;
         return (
             <Card>
-                <h4>Create new category</h4>
+                <Callout icon="bookmark" intent="none" title="Create new category">
+                    Begin typing to submit new category
+                </Callout>
+                <br/>
                 <label className="bp3-label">
                     Category name
                     <InputGroup onChange={this.onChange} value={category}/>
@@ -48,10 +51,7 @@ export class NewCategory extends React.Component<IProps, IState> {
                     >Create new category</Button>
                 )}
                 <h4>All Categories</h4>
-                <table
-                    className="bp3-html-table bp3-html-table-striped bp3-interactive"
-                    style={{width: '100%'}}
-                >
+                <table className="bp3-html-table bp3-html-table-striped" style={{width: '100%'}}>
                     <tbody style={{height: '300px'}}>
                     {categories.map((name, index) => {
                         return (
