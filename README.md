@@ -18,8 +18,10 @@ The front-end, hosted at [https://trustless.health](https://trustless.health/), 
 
 Note: Currently all created analysis offerings will run the same algorithm.
 
+
 You can use the following strings to test:
 
 GAAGCGTGAAGGCGTACTGCGGCTG  // Risk score 0
+
 GA**T**G**A**GTGA**G**G**CG**GT**T**CTG**T**GG**A**TG  // Risk score 4
 
