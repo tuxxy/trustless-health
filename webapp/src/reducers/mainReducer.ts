@@ -20,7 +20,7 @@ export interface IMainState {
 
 const defaultState: IMainState = {
     computeProgressOpen: false,
-    darkMode: false,
+    darkMode: true,
     dataToEncrypt: '',
     decryptedComputedData: '',
     encryptedComputedData: '',
