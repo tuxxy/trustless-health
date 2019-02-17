@@ -2,7 +2,7 @@ import {
     Alignment,
     Button,
     Classes,
-    FocusStyleManager,
+    FocusStyleManager, Intent,
     Navbar,
     NavbarDivider,
     NavbarGroup,
@@ -16,7 +16,6 @@ FocusStyleManager.onlyShowFocusOnTabs(); // Do not show blue box around all butt
 import ClientTabContainer from '../containers/clientTabContainer';
 import ProviderTabContainer from '../containers/providerTabContainer';
 import {IMainState} from '../reducers/mainReducer';
-import Home from "./home";
 
 interface IProps extends IMainState {
     initializeTrustlessHealthAction: () => void;
@@ -88,7 +87,22 @@ class Main extends React.Component<IProps, IState> {
                                 );
                             default:
                                 return (
-                                    <Home/>
+                                    <>
+                                        <div style={{textAlign: 'center', marginTop: '5%'}}>
+                                            <h1 style={{fontSize: '2.5em'}}>Decentralizing Health Care</h1>
+                                            <p style={{fontSize: '1.5em'}}>Using Fully Homomorphic Encryption to provide
+                                                patients
+                                                with a choice of which company's health analysis tool to use.</p>
+                                            <Button
+                                                onClick={this.handleGoToClient}
+                                                minimal={true}
+                                                large={true}
+                                                intent={Intent.PRIMARY}
+                                                icon="graph"
+                                            >Get Started!</Button>
+                                        </div>
+                                        <div className="home-background"/>
+                                    </>
                                 );
                         }
                     })()}
@@ -97,6 +111,10 @@ class Main extends React.Component<IProps, IState> {
             </div>
         );
     }
+
+    private handleGoToClient = () => {
+        this.setState({navbarTabId: 'client'});
+    };
 
     private handleNavbarTabChange = (navbarTabId: string) => this.setState({navbarTabId});
 }
