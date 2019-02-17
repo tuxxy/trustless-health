@@ -103,7 +103,7 @@ export const trustlessHealthMiddleware: Middleware = ({dispatch, getState}: Midd
         case START_ENCRYPTION_AND_TRANSFER:
              new Promise(async(resolve) => {
                 const keyPair = await trustlessHealthClient.getKeyPair();
-                const data = action.dataToEncrypt;
+                const data = main.dataToEncrypt;
                 const encodedData = TrustlessHealthClient.encode(data);
                 const encryptedData = await trustlessHealthClient.encrypt(encodedData, keyPair.secretKey);
                 const computedData = await trustlessHealthClient.compute(action.host, encryptedData, keyPair.cloudKey);
