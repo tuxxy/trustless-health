@@ -1,7 +1,7 @@
 import axios from 'axios';
 import {Dispatch, Middleware, MiddlewareAPI} from 'redux';
 import {RootActions} from "../actions";
-import {IAnalysisOffering} from "./config";
+import {IAnalysisOffering, IPurchasedOffer} from "./config";
 import {TrustlessHealthClient} from "./trustlessHealthClient";
 
 const trustlessHealthClient = new TrustlessHealthClient();
@@ -29,11 +29,9 @@ export const trustlessHealthMiddleware: Middleware = ({dispatch, getState}: Midd
     switch (action.type) {
         case INITIALIZE_TRUSTLESS_HEALTH:
 
-            const purchasedOfferingCallback = (error: Error, result: any) => {
+            const purchasedOfferingCallback = (error: Error, result: IPurchasedOffer) => {
                 if (!error) {
-                    dispatch(startEncryptionAndTransferAction(main.dnaToEncrypt, result))
-                    //const host = result.returnValues.offering.host;
-                    //dispatch(startEncryptionAndTransferAction())
+                    dispatch(startEncryptionAndTransferAction(main.dnaToEncrypt, result.returnValues.offering.host));
                 } else {
                     console.error('Purchase of offer failed!');
                 }
@@ -94,10 +92,7 @@ export const trustlessHealthMiddleware: Middleware = ({dispatch, getState}: Midd
 
         case SUBMIT_PURCHASE_OFFERING:
             const submitPurchaseOfferingCallback = (error: Error, result: any) => {
-                if (!error) {
-                    dispatch(startEncryptionAndTransferAction());
-                    console.log(result);
-                } else {
+                if (error) {
                     console.error('Creating analysis offering failed.');
                     console.error(error);
                 }
@@ -112,24 +107,13 @@ export const trustlessHealthMiddleware: Middleware = ({dispatch, getState}: Midd
                 const data = action.dataToEncrypt;
                 const encodedData = TrustlessHealthClient.encode(data);
                 const encryptedData = await trustlessHealthClient.encrypt(encodedData, keyPair.secretKey);
-                const request = axios.post('http://localhost:5001', { encrypted_data: encryptedData, cloud_key: keyPair.cloudKey });
+                const request = axios.post('http://localhost:5001', {
+                    cloud_key: keyPair.cloudKey, encrypted_data: encryptedData });
                 resolve(request);
             }).then(decodedComputedData => {
                  dispatch(receiveDecryptedComputedDataAction(decodedComputedData));
              });
             break;
-
-            /*
-            const trustlessHealthClient = new TrustlessHealthClient();
-            const keypair = await trustlessHealthClient.getKeyPair();
-            const dna = this.state.DNA;
-            const encodedDna = TrustlessHealthClient.encode(dna);
-            console.log(encodedDna);
-            const encryptedDna = await trustlessHealthClient.encrypt(encodedDna, keypair.secretKey);
-            const computedDna = await trustlessHealthClient.compute(encryptedDna, keypair.cloudKey);
-            const decyptedComputedDna = await trustlessHealthClient.decrypt(computedDna, keypair.secretKey);
-            console.log(decodedComputedDna);
-            */
 
         default:
             break;
