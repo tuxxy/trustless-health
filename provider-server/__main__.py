@@ -7,7 +7,7 @@ from flask_cors import CORS, cross_origin
 import nufhe
 import base64
 import zlib
-from .fhe_wasm import perform_computation
+from fhe_wasm import perform_computation
 
 
 ctx = nufhe.Context()
