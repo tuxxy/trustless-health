@@ -1,8 +1,3 @@
-import * as React from 'react';
-import '../App.css';
-import PrepareDNA from "./PrepareDNA";
-import {ShowCategories} from "./showCategories";
-
 import {
     Alignment,
     Button,
@@ -14,6 +9,11 @@ import {
     NavbarHeading,
     PanelStack,
 } from "@blueprintjs/core";
+import * as React from 'react';
+import '../App.css';
+import NewCategoryContainer from '../containers/newCategoryContainer';
+import ShowCategoriesContainer from "../containers/showCategoriesContainer";
+import PrepareDNA from "./PrepareDNA";
 
 FocusStyleManager.onlyShowFocusOnTabs(); // Do not show blue box around all buttons
 
@@ -67,7 +67,10 @@ class Main extends React.Component<IProps> {
                         <PrepareDNA />
                     </div>
                     <div className={'widget-wrapper'}>
-                        <PanelStack initialPanel={{ component: ShowCategories, title: "Choose category" }} />
+                        <NewCategoryContainer/>
+                    </div>
+                    <div className={'widget-wrapper'}>
+                        <PanelStack initialPanel={{ component: ShowCategoriesContainer, title: "Choose category" }} />
                     </div>
                 </div>
                 <Button onClick={this.handleAdminTransfer}>Transfer ETH from admin</Button>

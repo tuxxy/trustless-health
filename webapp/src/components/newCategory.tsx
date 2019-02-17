@@ -1,11 +1,15 @@
 import { Button, Card, Elevation, InputGroup, Intent } from "@blueprintjs/core";
 import * as React from "react";
 
+interface IProps {
+    createCategoryAction: (categoryName: string) => void;
+}
+
 interface IState {
     category: string;
 }
 
-export class NewCategory extends React.Component<{}, IState> {
+export class NewCategory extends React.Component<IProps, IState> {
 
     public state = {
         category: '',
@@ -22,6 +26,7 @@ export class NewCategory extends React.Component<{}, IState> {
         if (category === '') {
             return;
         }
+        this.props.createCategoryAction(category);
     };
 
     public render() {
@@ -30,7 +35,7 @@ export class NewCategory extends React.Component<{}, IState> {
             <>
                 <Card elevation={Elevation.TWO}>
                     <label className="bp3-label">
-                        Insert your DNA
+                        Category name
                         <InputGroup onChange={this.onChange} value={category}/>
                     </label>
                     {category && (
