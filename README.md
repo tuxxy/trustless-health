@@ -11,13 +11,15 @@ The core of Trustless.Health is the compute engine which runs all models using f
 The front-end, hosted at [https://trustless.health](https://trustless.health/), is a React/Redux webapp written in typescript with ts-lint for strong type-safety. The web app uses axios to query a local Python server, which uses the nufhe package to generate encryption keys as well as encrypting/decrypting of messages. Users should run this locally (see the client-server directory). The webapp is web3 compatible and should work out of the box with Metamask.
 
 ## Try it out!
-1. Go to [https://trustless.health](https://trustless.health/)
-2. Log into MetaMask and set the RPC to https://trustless.health/ganache/ .
-3. Create an analysis category and offering in the "Provider" tab.
-4. Buy and run your analysis on a DNA string! (ask the team if you require some test eth)
+1. Start [Ganache](https://truffleframework.com/docs/ganache/overview) and run `truffle migrate --reset` in the `smart-contract` directory.
+3. Run `python __main__.py` in the `provider-sever` directory.
+4. Run `python __main__.py` in the `client-sever` directory.
+5. Run `npm start` in the `webapp` directory.
+6. Log into MetaMask and set the RPC to http://localhost:8545.
+7. In the app create an analysis a category and an analysis offering in the "Provider" tab.
+8. Then you can buy and run an analysis on a DNA string!
 
 Note: Currently all created analysis offerings will run the same algorithm.
-
 
 You can use the following strings to test:
 
